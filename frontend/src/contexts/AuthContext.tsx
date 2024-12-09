@@ -13,10 +13,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [formLogin, setFormLogin] = useState({ username: "", password: "" });
+  
 
-  const handleLogin = async (credentials: { username: string; password: string }) => {
+
+
+  const handleChangesLoginForm = (changes: { [key: string]: string }) => {
+    const updatedForm = { ...formLogin, ...changes };
+    setFormLogin(updatedForm);
+  }
+
+  const handleLogin = async () => {
     try {
-      const response = await login(credentials);
+      const response = await login(formLogin);
       if (!response) return;
       const { user } = response;
       if (user?.token) {
@@ -63,6 +72,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout: handleLogout,
     authenticated,
     loading,
+    handleChangesLoginForm,
+    formLogin
   };
 
   return (

@@ -4,7 +4,7 @@ import useWebSocket from "react-use-websocket";
 import { Administration } from "./pages/Administration";
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
+import { Login } from "../src/pages/Login";
 import { Settings } from "./pages/Settings";
 import { Contexts } from "./services/Contexts";
 import { PrivateRouteWrapper } from "./services/PrivateRouteWrapper";

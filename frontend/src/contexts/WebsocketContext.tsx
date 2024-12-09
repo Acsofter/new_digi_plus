@@ -35,8 +35,6 @@ export const WebsocketContext = () => {
   }
 }
 
-
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const useWebsocket = () => {
   const context = useContext(WebscocketContext);

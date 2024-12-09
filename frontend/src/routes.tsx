@@ -5,9 +5,12 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useAuthentication } from "./contexts/AuthContext";
+import LandingPage from "./pages/LandingPage";
+import { Login } from "./pages/Login";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
-  const { authenticated, loading } = useAuth();
+  const { authenticated, loading } = useAuthentication();
 
   if (loading) {
     return (
@@ -38,11 +41,11 @@ const AppRoutes: React.FC = () => {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/register" element={<RegisterPage />} /> */}
 
         {/* Private routes */}
-        <Route
+        {/* <Route
           path="/transactions"
           element={
             <PrivateRoute>
@@ -94,10 +97,10 @@ const AppRoutes: React.FC = () => {
               <CategoriesPage />
             </PrivateRoute>
           }
-        />
+        /> */}
 
         {/* Default route */}
-        <Route path="*" element={<NotFoundPage />} />
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
     </Router>
   );
