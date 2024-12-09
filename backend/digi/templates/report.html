@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+      }
+      .table-header td {
+        border: none;
+        padding: 0.5px 0;
+      }
+      .table-header th {
+        border: none;
+        padding: 0.5px 0;
+        font-size: 16px;
+        background: transparent;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 4px 0 4px 2px;
+        border: 1px solid #ddd;
+      }
+      th {
+        background-color: #f4f4f4;
+        text-align: left;
+      }
+      .ticket-header {
+        background-color: #2f00ff;
+        text-align: center;
+        padding: 2px 0;
+        color: #fff;
+      }
+      .highlight {
+        color: #2f00ff;
+      }
+      .pending {
+        color: #ff8800;
+      }
+      .approved {
+        color: #008000;
+      }
+      .rejected {
+        color: #ff0000;
+      }
+
+      .total-name {
+        border: none;
+        font-weight: bold;
+        text-align: right;
+        padding: 0 4px;
+      }
+
+      .total-result {
+        text-align: right;
+        padding: 0 3px;
+      }
+
+      .total-details {
+        border: none;
+        text-align: right;
+        padding: 2px 4px;
+      }
+
+      .details-header-right {
+        text-align: right;
+        padding: 0 4px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <table class="table-header">
+      <thead>
+        <tr>
+          <th>Colaborador</th>
+          <th class="details-header-right">Empresa</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr>
+          <td>{{collaborator.first_name}} {{collaborator.last_name}}</td>
+          <td class="details-header-right">{{company.name}}</td>
+        </tr>
+        <tr>
+          <td>{{collaborator.email}}</td>
+          <td class="details-header-right">
+            {{ company.email|default:"N/A" }}
+          </td>
+        </tr>
+        <tr>
+          <td>{{collaborator.username}}</td>
+          <td class="details-header-right">
+            {{ company.phone|default:"N/A" }}
+          </td>
+        </tr>
+        <tr>
+          <td>{{collaborator.address|default:"N/A"}}</td>
+          <td class="details-header-right">
+            {{ company.address|default:"N/A" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br /><br />
+    <h2 class="ticket-header">REPORTE DE PAGO</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Semana</th>
+          <th>Pago</th>
+          <th>Descripcion</th>
+          <th>Categoria</th>
+          <th>Fecha de Creación</th>
+          <th>Estado</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ item.week.week_number }}</td>
+          <td>{{ item.type }}</td>
+          <td>{{ "N/A" }}</td>
+          <td>{{ item.ticket.category.name }}</td>
+          <td>{{ item.created_at|slice:":10" }}</td>
+          {% if item.status == '1' %}
+          <td class="pending">Pendiente</td>
+          {% elif item.status == '2' %}
+          <td class="approved">Aprobado</td>
+          {% else %}
+          <td class="rejected">Rechazado</td>
+          {% endif %}
+          <td class="total-result">{{ item.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="7" class="total-name">Total Pendientes</td>
+          <td class="total-details">{{ total.pending }}</td>
+        </tr>
+        <tr>
+          <td colspan="7" class="total-name">Total Rechazados</td>
+          <td class="total-details">{{ total.rejected }}</td>
+        </tr>
+        <tr>
+          <td colspan="7" class="total-name">Subtotal</td>
+          <td class="total-details">{{ total.approved }}</td>
+        </tr>
+        <tr>
+          <td colspan="7" class="rejected total-name">Restante ({{percentage}}%)</td>
+          <td class="rejected total-details">- {{ total.company }}</td>
+        </tr>
+        <tr style="font-size: 16px; font-weight: bold">
+          <td colspan="7" class="total-name">Total</td>
+          <td class="total-details">{{ total.neto }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br /><br /><br /><br /><br />
+    <hr />
+    <span class="text-center">
+      {{collaborator.first_name}} {{collaborator.last_name}}</span
+    >
+  </body>
+</html>
