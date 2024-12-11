@@ -11,7 +11,7 @@ export const register = async ({
 }: RegisterForm): Promise<AuthenticationUserResponse["user"] | false> => {
   try {
     const response = await axios.post<AuthenticationUserResponse>(
-      `${import.meta.env.VITE_BASE_URL}/register/`,
+      `${import.meta.env.VITE_BASE_URL}/auth/register/`,
       { email, password, username, first_name, last_name }
     );
 
@@ -63,7 +63,7 @@ export const login = async ({
   try {
     const response = await axios.post<{
       user: { token: string; username: string; is_superuser: boolean };
-    }>(`${import.meta.env.VITE_BASE_URL}/login/`, { username, password });
+    }>(`${import.meta.env.VITE_BASE_URL}/auth/login/`, { username, password });
 
     if (response.status !== 200) {
       console.log("credenciales incorrectas");
@@ -94,7 +94,7 @@ export const isUserAuthenticated = async () => {
   if (!headers.authorization) return false;
 
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/me/`, {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/me/`, {
       headers,
     });
     return response.data;

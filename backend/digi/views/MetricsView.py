@@ -37,7 +37,10 @@ class MetricsViewSet(viewsets.GenericViewSet):
         total_today = self.get_queryset().filter(created_at__gte=today)
         
         first_month_date = today.replace(day=1)
-        last_month_date =  today.replace(month=today.month+1, day=1) - timedelta(days=1)
+        if today.month == 12:
+            last_month_date = today.replace(year=today.year + 1, month=1, day=1) - timedelta(days=1)
+        else:
+            last_month_date = today.replace(month=today.month + 1, day=1) - timedelta(days=1)
         # total_yesterday = tickets_data.filter(created_at__gte=today - timedelta(days=1)).select_related('payment')        
         # total_past_week = tickets_data.filter(
         #                                     Q(created_at__lt=first_current_week_date - timedelta(days=7)) &
@@ -53,9 +56,13 @@ class MetricsViewSet(viewsets.GenericViewSet):
 
 
     def list(self, request):
-        data = self.filter_tickets()
-        serializer = self.serializer_class(data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            data = self.filter_tickets()
+            serializer = self.serializer_class(data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])

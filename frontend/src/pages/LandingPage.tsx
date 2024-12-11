@@ -10,15 +10,13 @@ const LandingPage: React.FC = () => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold text-rose-500">MoneyManager</span>
+                <span className="text-2xl font-bold text-indigo-500">Digi</span>
               </div>
             </div>
             <div className="flex items-center">
-              <Link to="/login" className="text-gray-700 hover:text-rose-500 px-3 py-2 rounded-md text-sm font-medium">
+            
+              <Link to="/login" className="ml-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600">
                 Acceder
-              </Link>
-              <Link to="/register" className="ml-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-rose-500 hover:bg-rose-500">
-                Registarse
               </Link>
             </div>
           </div>
@@ -30,16 +28,16 @@ const LandingPage: React.FC = () => {
           <div className="px-4 py-6 sm:px-0">
             <div className="text-center">
               <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-               Toma el control de tus <span className="text-rose-500 animate-pulse">finanzas</span>
+                Administra tu <span className="text-indigo-500 animate-pulse">papelería</span> con Digi
               </h1>
               <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                Te ayudamos a manejar tus finanzas, optimizar tus gastos y alcanzar tus objetivos.
+                Te ayudamos a gestionar las métricas semanales y el rendimiento de tus empleados.
               </p>
               <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                 <div className="rounded-md shadow">
-                  <Link to="/register" className="w-full flex items-center justify-center px-8 py-3 border border-rose-400 shadow-md shadow-rose-300 text-base font-medium rounded-md text-white bg-gradient-to-r from-rose-600 to-rose-400  hover:bg-rose-600 md:py-4 md:text-lg md:px-10 duration-200">
+                  <Link to="/login" className="w-full flex items-center justify-center px-8 py-3 border border-indigo-400 shadow-md shadow-indigo-300 text-base font-medium rounded-md text-white bg-gradient-to-r from-indigo-600 to-indigo-400 hover:bg-indigo-600 md:py-4 md:text-lg md:px-10 duration-200">
                     Comencemos
-                    <ArrowRight className="ml-2 -mr-1 h-5 w-5 animate-bouncex   " aria-hidden="true" />
+                    <ArrowRight className="ml-2 -mr-1 h-5 w-5 animate-bouncex" aria-hidden="true" />
                   </Link>
                 </div>
               </div>
@@ -53,37 +51,37 @@ const LandingPage: React.FC = () => {
                 <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
                   <div className="relative">
                     <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-rose-500 text-white">
+                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
                         <BarChart2 className="h-6 w-6" aria-hidden="true" />
                       </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Seguimiento de gastos</p>
+                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Métricas Semanales</p>
                     </dt>
                     <dd className="mt-2 ml-16 text-base text-gray-500">
-                      Registre y clasifique fácilmente sus gastos para comprender sus hábitos de gasto.
+                      Visualiza y analiza las métricas de rendimiento de tu papelería cada semana.
                     </dd>
                   </div>
 
                   <div className="relative">
                     <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-rose-500 text-white">
+                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
                         <PieChart className="h-6 w-6" aria-hidden="true" />
                       </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Herramientas de presupuesto</p>
+                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Gestión de Empleados</p>
                     </dt>
                     <dd className="mt-2 ml-16 text-base text-gray-500">
-                    Establece presupuestos para diferentes categorías y realiza un seguimiento de tu progreso a lo largo del mes.
+                      Administra las tareas y el rendimiento de tus empleados de manera eficiente.
                     </dd>
                   </div>
 
                   <div className="relative">
                     <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-rose-500 text-white">
+                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
                         <DollarSign className="h-6 w-6" aria-hidden="true" />
                       </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Metas financieras</p>
+                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Porcentaje de Ganancias</p>
                     </dt>
                     <dd className="mt-2 ml-16 text-base text-gray-500">
-                    Establezca y realice un seguimiento de sus objetivos financieros, ya sea ahorrar para unas vacaciones o pagar una deuda.
+                      Calcula y visualiza el porcentaje de ganancias que se quedan en la papelería.
                     </dd>
                   </div>
                 </dl>
@@ -111,7 +109,7 @@ const LandingPage: React.FC = () => {
           </div>
           <div className="mt-8 md:mt-0 md:order-1">
             <p className="text-center text-base text-gray-400">
-              &copy; 2024 MoneyManager, Inc. All rights reserved.
+              &copy; 2024 Digi, Inc. Todos los derechos reservados.
             </p>
           </div>
         </div>

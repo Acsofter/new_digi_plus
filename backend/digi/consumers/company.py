@@ -4,16 +4,15 @@ import traceback
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
 import jwt
-
-
-
+   
 class CompanyConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.room_name = "zaO9mXST0Rwd06CQ4cDqZ1Z3LcjO4SRsrfamRl5ocXANKYtJK9"
+        self.room_name = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         self.user = self.scope['user']
 
-        if not self.user:
+
+        if self.user.is_anonymous:
             await self.close()
 
         self.room_group_name = f'group_{self.room_name}'
@@ -27,6 +26,7 @@ class CompanyConsumer(AsyncWebsocketConsumer):
             self.room_group_name, { 
                   'type': 'user_joined',
                   'user': self.user,
+
             }
         )
 
@@ -61,19 +61,25 @@ class CompanyConsumer(AsyncWebsocketConsumer):
             
 
             await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': message_type,
-                'message': message,
-                'user': self.user,
-                'payload': text_data_json.get('payload', {})
-            }
-        )
+                self.room_group_name,
+                {
+                    'type': message_type,
+                    'message': message,
+                    'user': {
+                        'id': self.user.id,
+                        'username': self.user.username,
+                        'email': self.user.email,
+                        'roles': self.user.get_roles()
+                    },
+                    'payload': text_data_json.get('payload', {})
+
+                }
+            )
        
         except Exception as e:
             tb_traceback = traceback.format_tb(e.__traceback__)
             print("ERROR: ", e, tb_traceback)
-            raise e
+            pass
             
         
 
@@ -92,11 +98,18 @@ class CompanyConsumer(AsyncWebsocketConsumer):
 
     async def user_joined(self, event):
 
+        current_user = event['user']
 
         await self.send(text_data=json.dumps({
             "type": "user_joined",
-            "user":self.user,
-            "message": f"{self.user['username']} se ha unido al chat",
+            "user": 
+                 {
+                    'id': current_user.id,
+                    'username': current_user.username,
+                    'roles': current_user.get_roles()
+
+                },
+            "message": f"{current_user.username} se ha unido al chat",
         }))
 
     async def user_disabled(self, event):
@@ -123,9 +136,16 @@ class CompanyConsumer(AsyncWebsocketConsumer):
 
 
     async def user_disconnect(self, event):
+        current_user = event['user']
 
         await self.send(text_data=json.dumps({
             "type": "user_disconnect",
-            "user": self.user,
-            "message": f"{self.user['username']} se ha desconectado al chat",
+            "user": 
+                 {
+                    'id': current_user.id,
+                    'username': current_user.username,
+                    'roles': current_user.get_roles()
+
+                },
+            "message": f"{current_user.username} se ha desconectado al chat",
         }))

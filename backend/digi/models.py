@@ -1,4 +1,3 @@
-
 import jwt
 import time
 from datetime import datetime, timedelta
@@ -78,6 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
         return token
 
+
 class Company(models.Model):
     id                      = models.AutoField(primary_key=True)
     name                    = models.CharField(max_length=100)
@@ -85,7 +85,7 @@ class Company(models.Model):
     address                 = models.CharField(max_length=255, blank=True, null=True)
     email                   = models.EmailField(blank=True, null=True)
     phone                   = models.CharField(max_length=20, blank=True, null=True)
-    collaborator_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    collaborator_percentage = models.IntegerField()
     created_at              = models.DateTimeField(auto_now_add=True)
     updated_at              = models.DateTimeField(auto_now=True)
 
@@ -116,7 +116,7 @@ class Payment(models.Model):
                      ),
         default     =   "pending")
     type            = models.CharField(max_length=50)
-    amount          = models.DecimalField(max_digits=10, decimal_places=2)
+    amount          = models.IntegerField()
     week            = models.ForeignKey('Week', on_delete=models.CASCADE)
     collaborator    = models.ForeignKey('User', on_delete=models.CASCADE)
     created_at      = models.DateTimeField(auto_now_add=True) # change to created_at
@@ -131,7 +131,7 @@ class History(models.Model):
 class Week(models.Model):
     id              = models.AutoField(primary_key=True)
     collaborator    = models.ForeignKey('User', on_delete=models.CASCADE)
-    week_number     = models.DecimalField(max_digits=2, decimal_places=0)
+    week_number     = models.IntegerField()
     is_paid         = models.BooleanField(default=False)
     payment_date    = models.DateTimeField(null=True)
     created_at      = models.DateTimeField(auto_now_add=True)

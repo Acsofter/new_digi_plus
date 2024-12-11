@@ -1,13 +1,19 @@
+import { LogIn } from "lucide-react";
 import React from "react";
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
 } from "react-router-dom";
 import { useAuthentication } from "./contexts/AuthContext";
+import { Layout } from "./layouts/Layout";
+import { Home } from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import { Login } from "./pages/Login";
+import NotFound from "./pages/not-found";
+import { Dashboard } from "./pages/Dashboard";
+import { Help } from "./pages/Help";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
   const { authenticated, loading } = useAuthentication();
@@ -23,18 +29,10 @@ const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
       </div>
     );
   }
+
   return authenticated ? children : <Navigate to="/login" />;
 };
 
-/**
- * AppRoutes
- *
- * This component is the main router of the application. It defines all the routes of the application.
- * It uses the PrivateRoute component to protect routes from unauthenticated users.
- * If the user is not authenticated, it redirects to the login page.
- * @example
- * <AppRoutes />
- */
 const AppRoutes: React.FC = () => {
   return (
     <Router>
@@ -42,66 +40,37 @@ const AppRoutes: React.FC = () => {
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<RegisterPage />} /> */}
-
-        {/* Private routes */}
-        {/* <Route
-          path="/transactions"
-          element={
-            <PrivateRoute>
-              <TransactionsPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <DashboardPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/settings"
-          element={
-            <PrivateRoute>
-              <SettingsPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/budget"
-          element={
-            <PrivateRoute>
-              <BudgetPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/goals"
-          element={
-            <PrivateRoute>
-              <GoalsPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/categories"
-          element={
-            <PrivateRoute>
-              <CategoriesPage />
-            </PrivateRoute>
-          }
-        /> */}
-
-        {/* Default route */}
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
+
+      <Layout>
+        <Routes>
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <PrivateRoute>
+                <Help />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 };

@@ -9,18 +9,19 @@ import { useMemo } from "react";
 export const TicketPayment = () => {
   const {
     categories,
-    showCashModal,
+    addTicketModal,
     form,
     handleChanges,
-    closeModal,
+    closeAddTicketModal,
     handleSubmit,
     quickAmounts,
   } = useHome();
   const { user, company } = useAuthentication();
 
+
   const memoizedContent = useMemo(() => {
     return (
-      <div className="p-4">
+      <div className="p-4 ">
         <div className="mb-5 ">
           <label
             htmlFor="ticket-type"
@@ -50,7 +51,7 @@ export const TicketPayment = () => {
           </select>
         </div>
 
-         <div className=" w-full mb-4 ">
+        <div className=" w-full mb-4 ">
           <div className="flex flex-col gap-2">
             <input
               id="cash-input"
@@ -85,7 +86,6 @@ export const TicketPayment = () => {
               ))}
             </div>
           </div>
-         
         </div>
 
         <div className="mb-4">
@@ -102,16 +102,13 @@ export const TicketPayment = () => {
               handleChanges({ changes: { description: e.target.value } })
             }
             placeholder="Ingrese una descripción del ticket"
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 min-h-20 border rounded-lg bg-white"
             rows={3}
           />
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="user"
-            className="block text-sm text-gray-600 mb-2"
-          >
+          <label htmlFor="user" className="block text-sm text-gray-600 mb-2">
             Usuario
           </label>
           <div className="w-full flex items-center justify-between p-3 border rounded-lg">
@@ -143,8 +140,7 @@ export const TicketPayment = () => {
               </span>
             </div>
             <span>
-              -{" "}
-              {form.payment.amount * (company?.collaborator_percentage / 100)}
+              - {form.payment.amount * (parseInt(company?.collaborator_percentage) / 100)}
             </span>
           </div>
           <div className="flex justify-between font-bold">
@@ -157,41 +153,40 @@ export const TicketPayment = () => {
           </div>
         </div>
 
-         <button
-            onClick={(e) => handleSubmit(e)}
-            className="w-full bg-gradient-to-tr from-indigo-700 to-indigo-500 shadow shadow-indigo-500 border border-indigo-700 text-white rounded-lg p-3 font-medium hover:bg-indigo-700"
-          >
-            Añadir
-          </button>
-                
-       
+        <button
+          onClick={(e) => handleSubmit(e)}
+          className="w-full bg-gradient-to-tr from-indigo-700 to-indigo-500 shadow shadow-indigo-500 border border-indigo-700 text-white rounded-lg p-3 font-medium hover:bg-indigo-700"
+        >
+          Añadir
+        </button>
       </div>
     );
   }, [form, handleChanges]);
 
   return (
-    <AnimatePresence>t
-      {showCashModal && (
+    <AnimatePresence>
+      t
+      {addTicketModal && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
+          transition={{ duration: 0.2 }}
           className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-end justify-end"
         >
           <motion.div
-            initial={{ x: '100%' }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="bg-white text-slate-950 w-full max-w-lg h-full overflow-y-auto shadow-lg"
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 20, stiffness: 250 }}
+            className="bg-white text-slate-950 w-full max-w-lg h-full overflow-y-auto shadow-lg no-scrollbar"
           >
             <div className="p-4 flex items-center border-b">
               <div>
                 <h2 className="font-semibold text-xl">Nuevo ticket</h2>
               </div>
               <div className="ml-auto flex items-center gap-2">
-                <button onClick={closeModal}>
+                <button onClick={closeAddTicketModal}>
                   <X className="h-5 w-5 text-gray-500" />
                 </button>
               </div>

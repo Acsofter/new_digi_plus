@@ -215,23 +215,25 @@ class MetricsSerializer(serializers.Serializer):
             }
 
         except Exception as e:
-            serializers.ValidationError(str(e))            
+
+            raise serializers.ValidationError(str(e))            
 
 
     def get_today(self, obj):
 
-        today_data = obj.get('today', None)
-
-        if today_data is None:
-            raise serializers.ValidationError("'today' key is None in input data")
-        
         try:
+            today_data = obj.get('today', None)
+
+            if today_data is None:
+                raise serializers.ValidationError("'today' key is None in input data")
+        
             total = self.calculate_metrics(today_data)
             approved = self.calculate_metrics(today_data.filter(payment__status=2))
             result = {key: {"approved": approved[key], "total": total[key]} for key in approved}
 
             return result
         except Exception as e:
+            print(e)
             raise serializers.ValidationError(str(e))
         
 

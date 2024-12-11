@@ -1,5 +1,5 @@
 import { useAuthentication } from "../../contexts/AuthContext";
-import { useWebsocket } from "../../contexts/WebsocketContext";
+import { useWebsocket, useWebsockets } from "../../contexts/WebsocketContext";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
@@ -10,7 +10,7 @@ import {
   DollarSign,
   Eye,
   Percent,
-  Ticket
+  Ticket,
 } from "lucide-react";
 import {
   createContext,
@@ -21,7 +21,6 @@ import {
   useState,
 } from "react";
 import { useUserServices } from "../../services/user.services";
-
 
 const initialMetricsState: MetricsInterface = {
   today: {
@@ -68,8 +67,7 @@ export const HomeContext = createContext<any | null>(null);
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  
-  const { wsState } = useWebsocket();
+  const { wsState } = useWebsockets();
   const { user } = useAuthentication();
   const {
     getMetrics,
@@ -79,10 +77,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     handlePagination,
   } = useUserServices();
   const [ticketSelected, setTicketSelected] = useState<Ticket | null>(null);
+  const [addTicketModal, setAddTicketModal] = useState(false);
   const [metrics, setMetrics] = useState<MetricsInterface>(initialMetricsState);
   const [categories, setCategories] = useState<Category[]>([]);
   const { createTicket } = useUserServices();
-  const [showCashModal, setShowCashModal] = useState(false);
   const quickAmounts = [25, 30, 35, 50, 75, 100, 200, 500];
   const [form, setForm] = useState(initialForm);
   const [responseTicketsPending, setResponseTicketsPending] =
@@ -102,6 +100,14 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const closeAddTicketModal = () => {
+    setAddTicketModal(false);
+  };
+
+  const openAddTicketModal = () => {
+    setAddTicketModal(true);
+  };
+
   const fetchTickets = async () => {
     try {
       const [pending, rejected, approved] = await Promise.all([
@@ -118,13 +124,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const closeModal = () => {
-    setShowCashModal(false);
-  };
-
-  const openModal = () => {
-    setShowCashModal(true);
-  };
 
   const onSelectTicket = (ticket: Ticket) => {
     setTicketSelected(ticket);
@@ -151,6 +150,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   }: {
     changes: { [key: string]: string | number };
   }) => {
+
+    console.log(changes);
     const updatedForm = { ...form, ...changes };
     setForm(updatedForm);
   };
@@ -260,7 +261,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="text-xs text-slate-400 dark:bg-slate-700 p-1 h-14 font-semibold"
+          className="text-xs text-slate-400 dark:bg-slate-700 font-semibold h-16"
         >
           {response && (
             <>
@@ -268,10 +269,11 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
                 {title}
                 <br />
                 <span className="text-slate-300 font-normal">
-                  {response.count > 0 ?
-                    `pag. ${response.current} / ${Math.ceil(
-                      response.count / 5
-                    )}` : "..."}
+                  {response.count > 0
+                    ? `pag. ${response.current} / ${Math.ceil(
+                        response.count / 5
+                      )}`
+                    : "..."}
                 </span>
               </td>
               {response.count > 0 ? (
@@ -301,10 +303,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
                 </>
               ) : (
                 <>
-                <td>---</td>
+                  <td>---</td>
                   <td
                     colSpan={3}
-                    className="text-left font-normal italic text-gray-300"
+                    className="text-left font-normal italic text-gray-300 "
                   >
                     Aun no existen tickets {title.toLowerCase()} para mostrar
                   </td>
@@ -321,7 +323,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`bg-white border-b h-14  ${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
+            className={`bg-white border-b h-16  ${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 `}
           >
             <td className={`border-l-4 ${color} `}>
               {((response.current || 0) - 1) * 5 + (index + 1)}
@@ -340,26 +342,27 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
               {`${ticket.collaborator.username}`}
             </td>
             <td className="">
-              <span className="hidden md:inline">{new Date(ticket.created_at).toLocaleString("es-EN", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}</span>
+              <span className="hidden md:inline">
+                {new Date(ticket.created_at).toLocaleString("es-EN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
 
-               <span className="inline md:hidden">{new Date(ticket.created_at).toLocaleString("es-EN", {
-                year: "numeric",
-                month: "long",
-              
-              })}</span>
-
-              
+              <span className="inline md:hidden">
+                {new Date(ticket.created_at).toLocaleString("es-EN", {
+                  year: "numeric",
+                  month: "long",
+                })}
+              </span>
             </td>
             <td className={`border-r-2 ${color} border-spacing-0`}>
               <div className="flex justify-center gap-1 w-full">
                 {user?.roles.includes("user") ? (
-                  <Eye 
+                  <Eye
                     className="w-4 h-4 inline mr-1 text-gray-400 cursor-pointer hover:opacity-85"
                     onClick={() => onSelectTicket(ticket)}
                   />
@@ -428,7 +431,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    console.log("wsState: ", wsState);
     if (wsState.lastMessage) {
       const { lastMessage } = wsState;
       switch (lastMessage.type) {
@@ -458,10 +460,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const contextValue = {
-    showCashModal,
     quickAmounts,
-    closeModal,
-    openModal,
+    closeAddTicketModal,
+    openAddTicketModal,
+    addTicketModal,
     handleChanges,
     handleSubmit,
     metrics,
@@ -497,7 +499,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const useHome = () => {
   const context = useContext(HomeContext);
@@ -505,4 +506,4 @@ export const useHome = () => {
     throw new Error("useHome must be used within an HomeProvider");
   }
   return context;
-}
+};

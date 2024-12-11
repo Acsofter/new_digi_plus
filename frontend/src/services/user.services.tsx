@@ -1,17 +1,17 @@
 import axios from "axios";
+import { useWebsockets } from "../contexts/WebsocketContext";
 import { AuthHeader } from "./auth.header";
-import { useWebsocket } from "../contexts/WebsocketContext";
 
-const apiRequest = async <T, Data = unknown>(
+export const apiRequest = async <T, Data = unknown>(
   method: "get" | "post" | "put" | "delete",
   endpoint: string,
-  data?: Data
+  config?: Data
 ): Promise<T | false> => {
   try {
     const response = await axios({
       method,
       url: `${import.meta.env.VITE_BASE_URL}${endpoint}`,
-      data,
+      ...config,
       headers: AuthHeader(),
     });
     return response.status === 200 || response.status === 201
@@ -24,7 +24,7 @@ const apiRequest = async <T, Data = unknown>(
 };
 
 export const useUserServices = () => {
-  const { sendMessage } = useWebsocket();
+  const { sendMessage } =   useWebsockets();
 
   const getWeekNumber = (date: Date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
@@ -145,14 +145,16 @@ export const useUserServices = () => {
       sendMessage({
         type: "ticket_updated",
         message: "Ticket actualizado",
-        payload: { collaborator: response.data.collaborator },
+        payload: { collaborator: response.collaborator },
       });
     }
     return response;
   };
 
   const createTicket = async (details: CreateTicket) => {
-    const response = await apiRequest<Ticket>("post", `/tickets/`, details);
+    const response = await apiRequest<Ticket>("post", `/tickets/`, {
+      data: details,
+    });
     if (response) {
       sendMessage({
         type: "ticket_added",

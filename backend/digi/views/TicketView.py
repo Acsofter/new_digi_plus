@@ -38,17 +38,25 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def create(self, request):
         week = Week.objects.get_or_create(week_number=today.isocalendar().week, collaborator=request.user, )[0]
+        if not payment_data.get('amount', None): return Response({"amount": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
 
         payment_data = request.data.pop('payment', {})
-        payment_data['type'] = payment_data.get('type', 'Efectivo')
-        payment_data['status'] =  payment_data.get('status', '1')
-        payment_data['collaborator'] = request.user
-        payment_data['week'] = week
-        payment = Payment.objects.create(**payment_data)
+        payment_details = {
+            'type': payment_data.get('type', 'Efectivo'),
+            'amount': payment_data.get('amount'),
+            'status': 1,
+            'collaborator': request.user,
+            'week': week,
+        }
+     
+        payment = Payment.objects.create(**payment_details)
 
-        request.data['payment']     = payment.id
-        request.data['collaborator'] = request.user.id
-
+        request.data = {
+            **request.data,
+            payment: payment.id,
+            'collaborator': request.user.id
+        }
+        
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -60,17 +68,17 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def modify_payment(self, payment_details):
         if not payment_details: return
-        payment = get_object_or_404(Payment, pk=payment_details["id"])
-        payment.amount = payment_details.get('amount', payment.amount)
-        payment.type = payment_details.get('type', payment.type)
+        payment = get_object_or_404(Payment, pk=payment_details.get('id'))
+        # payment.amount = payment_details.get('amount', payment.amount)
+        # payment.type = payment_details.get('type', payment.type)
         payment.status = payment_details.get('status', payment.status)
         payment.save()
    
     def update(self, request, pk=None):
         ticket = get_object_or_404(Ticket, pk=pk)
 
+        payment_details['id'] = ticket.payment.id
         payment_details = request.data.pop('payment', {})
-        payment_details["id"] = ticket.payment.id
         
         self.modify_payment(payment_details)
 
