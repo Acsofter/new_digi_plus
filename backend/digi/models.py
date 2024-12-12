@@ -135,6 +135,7 @@ class Week(models.Model):
     is_paid         = models.BooleanField(default=False)
     payment_date    = models.DateTimeField(null=True)
     created_at      = models.DateTimeField(auto_now_add=True)
+    collaborator_percentage = models.IntegerField(default=0)
 
     def generate_payments(self):
         self.is_paid = True

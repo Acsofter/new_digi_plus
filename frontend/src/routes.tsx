@@ -14,6 +14,7 @@ import { Login } from "./pages/Login";
 import NotFound from "./pages/not-found";
 import { Dashboard } from "./pages/Dashboard";
 import { Help } from "./pages/Help";
+import { Payments } from "./pages/Payments";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
   const { authenticated, loading } = useAuthentication();
@@ -65,6 +66,14 @@ const AppRoutes: React.FC = () => {
             element={
               <PrivateRoute>
                 <Help />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/payments"
+            element={
+              <PrivateRoute>
+                <Payments />
               </PrivateRoute>
             }
           />

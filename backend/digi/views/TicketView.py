@@ -66,21 +66,25 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    def modify_payment(self, payment_details):
-        if not payment_details: return
-        payment = get_object_or_404(Payment, pk=payment_details.get('id'))
+    def modify_payment(self, id, status):
+        if not status: return
+        payment = get_object_or_404(Payment, id=id)
         # payment.amount = payment_details.get('amount', payment.amount)
         # payment.type = payment_details.get('type', payment.type)
-        payment.status = payment_details.get('status', payment.status)
+        payment.status = status
         payment.save()
    
     def update(self, request, pk=None):
         ticket = get_object_or_404(Ticket, pk=pk)
 
-        payment_details['id'] = ticket.payment.id
-        payment_details = request.data.pop('payment', {})
-        
-        self.modify_payment(payment_details)
+        payment_data = request.data.get('payment', {})
+
+        status_found = payment_data.get('status')
+        del request.data['payment']
+        if not status_found:
+            return Response({"status": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        self.modify_payment(ticket.payment.id, status_found)
 
         serializer = self.serializer_class(ticket, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

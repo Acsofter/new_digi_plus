@@ -57,7 +57,7 @@ export const DashboardMetrics = () => {
           </div>
           <div className="w-full text-center">
             <p className="text-sm font-medium text-gray-100">
-              Promedio por día:
+              Promedio/día
             </p>
             <p className="text-4xl font-bold text-gray-100">
               $<AnimatedCounter to={Math.ceil(averageTicketsPerDay)} />

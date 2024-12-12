@@ -1,15 +1,19 @@
 // src/pages/Login.tsx
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { Navigate } from "react-router-dom";
 import login_img from "../assets/login-img.webp";
 import { useAuthentication } from "../contexts/AuthContext";
-import { LoaderCircle } from "lucide-react";
 
 export const Login = () => {
-  const { formLogin, handleChangesLoginForm, login, loading } =
+  const { formLogin, handleChangesLoginForm, login, loading, authenticated } =
     useAuthentication();
 
-  return (
+
+
+  return authenticated ? (
+   <Navigate to="/home"/>
+  ) : (
     <div className="h-screen bg-slate-50 dark:bg-gray-900 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-msl w-full  h-full flex flex-col md:flex-row overflow-hidden">
         {/* Left side */}
@@ -89,7 +93,7 @@ export const Login = () => {
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <LoaderCircle />
+                  <LoaderCircle className="animate-spin" />
                 </span>
               ) : (
                 "Iniciar sesión"

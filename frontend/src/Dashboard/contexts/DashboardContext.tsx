@@ -28,15 +28,14 @@ ChartJS.register(
 
 export const DashboardContext = createContext<any | null>(null);
 
-// Definición de interfaces
 interface LineChartData {
   labels: string[];
-  datasets: any[]; // Puedes especificar un tipo más específico si lo deseas
+  datasets: any[]; 
 }
 
 interface BarChartData {
   labels: string[];
-  datasets: any[]; // Puedes especificar un tipo más específico si lo deseas
+  datasets: any[]; 
 }
 
 interface DoughnutChartData {

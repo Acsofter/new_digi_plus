@@ -124,7 +124,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-
   const onSelectTicket = (ticket: Ticket) => {
     setTicketSelected(ticket);
   };
@@ -150,7 +149,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   }: {
     changes: { [key: string]: string | number };
   }) => {
-
     console.log(changes);
     const updatedForm = { ...form, ...changes };
     setForm(updatedForm);
@@ -441,21 +439,17 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           fetchMetrics();
           break;
       }
-
-      // const messageData = JSON.parse(lastMessage.data) ;
-      // switch (messageData.type) {
-      //   case "ticked_added":
-      //     fetchTickets();
-      //     break;
-      // }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsState]);
+
+
 
   useEffect(() => {
     fetchMetrics();
     fetchTickets();
     fetchCategories();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

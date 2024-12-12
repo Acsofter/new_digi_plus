@@ -1,4 +1,11 @@
-import { BadgeHelp, Gauge, House, MonitorCog, Shield } from "lucide-react";
+import {
+  BadgeHelp,
+  DollarSign,
+  Gauge,
+  House,
+  MonitorCog,
+  Shield,
+} from "lucide-react";
 import {
   createContext,
   ReactNode,
@@ -31,14 +38,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const [formLogin, setFormLogin] = useState({ username: "", password: "" });
-  const [menuSidebar] = useState([
-    { name: "Inicio", icon: <House size={24} />, path: "/home" },
-    { name: "Estadisticas", icon: <Gauge size={24} />, path: "/dashboard" },
+  const [menuSidebarAdmin] = useState([
     {
       name: "Administración",
       icon: <Shield size={24} />,
       path: "/admin",
     },
+    {
+      name: "Pagos",
+      icon: <DollarSign size={24} />,
+      path: "/payments",
+    },
+  ]);
+  const [menuSidebar] = useState([
+    { name: "Inicio", icon: <House size={24} />, path: "/home" },
+    { name: "Estadisticas", icon: <Gauge size={24} />, path: "/dashboard" },
+
     { name: "Ajustes", icon: <MonitorCog size={24} />, path: "/settings" },
     { name: "Ayuda", icon: <BadgeHelp size={24} />, path: "/help" },
   ]);
@@ -127,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     handleChangesLoginForm,
     formLogin,
     menuSidebar,
+    menuSidebarAdmin,
   };
 
   return (

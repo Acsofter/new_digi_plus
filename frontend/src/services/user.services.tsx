@@ -139,7 +139,7 @@ export const useUserServices = () => {
 
   const updateTicketStatus = async (id: number, status: number) => {
     const response = await apiRequest<Ticket>("put", `/tickets/${id}/`, {
-      params: { payment: { status } },
+      data: { payment: { status } },
     });
     if (response) {
       sendMessage({

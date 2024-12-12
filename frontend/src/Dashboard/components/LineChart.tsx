@@ -28,7 +28,7 @@ ChartJS.register(
 );
 
 export const LineChart = () => {
-  const { lineChartData, barChartData } = useDashboard();
+  const { lineChartData } = useDashboard();
 
   const chartOptions = {
     responsive: true,

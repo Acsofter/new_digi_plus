@@ -28,12 +28,14 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def generate_payment(self, request):
-        week_number = request.data.get('week', None)
-        collaborator = request.data.get('collaborator', None)
+        data = {
+            "week_number": request.data.get('week'),
+            "collaborator": request.data.get('collaborator'),
+        }
 
-        if not week_number:
+        if not data.get("week_number"):
             raise serializers.ValidationError('week number are required')
-        week = Week.objects.get(collaborator=collaborator, week_number=week_number)
+        week = Week.objects.get(**data)
         if not week:
             raise serializers.ValidationError('week not found')
         try:

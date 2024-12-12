@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ArcElement,
   BarElement,
@@ -11,7 +10,6 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
 import { useDashboard } from "../contexts/DashboardContext";
 
 ChartJS.register(
@@ -27,14 +25,7 @@ ChartJS.register(
 );
 
 export const DoughnutCard = () => {
-  const {
-    doughnutChartData,
-    barChartborderColor,
-    totalTickets,
-    averageTicketsPerDay,
-    mostProductiveUser,
-    users,
-  } = useDashboard();
+  const { totalTickets, users } = useDashboard();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
