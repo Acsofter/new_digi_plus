@@ -1,8 +1,7 @@
-import React from "react";
-import { useDashboard } from "../contexts/DashboardContext";
+import { TrendingUp } from "lucide-react";
 import { useAuthentication } from "../../contexts/AuthContext";
-import { ArrowUpRight, ArrowDownRight, TrendingUp } from "lucide-react";
 import AnimatedCounter from "../../Home/components/AnimatedCounter";
+import { useDashboard } from "../contexts/DashboardContext";
 
 const MetricCard = ({
   title,
@@ -20,14 +19,14 @@ const MetricCard = ({
     <p className="text-3xl font-bold text-gray-900 mb-4">
       {value.toLocaleString("es-ES", { style: "currency", currency: "DOP" })}
     </p>
-    <div
+    {/* <div
       className={`flex items-center ${
         isPositive ? "text-green-600" : "text-red-600"
       }`}
     >
       {isPositive ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
       <span className="ml-1 text-sm font-medium">{change}%</span>
-    </div>
+    </div> */}
   </div>
 );
 
@@ -44,41 +43,41 @@ export const DashboardMetrics = () => {
       <div className="lg:col-span-1 bg-gradient-to-r from-indigo-600 to-indigo-400 rounded-xl shadow-lg p-4 text-white  hover:brightness-90">
         <div className="flex items-center justify-between mb-4">
           <p className="font-semibold text-indigo-100 text-lg">
-            Usuario de la semana
+            Usuario de la semana 🌟
           </p>
           <TrendingUp size={24} className="text-indigo-100" />
         </div>
         <div className="flex gap-3 w-full content-center items-center justify-items-center">
           <div className="w-full text-center">
-            <p className="text-sm font-medium text-gray-100">Total:</p>
+            <p className="text-sm font-medium text-gray-100">Total: 💰</p>
             <p className="text-4xl font-bold text-gray-100">
               $<AnimatedCounter to={mostProductiveUser.total} />
             </p>
           </div>
           <div className="w-full text-center">
             <p className="text-sm font-medium text-gray-100">
-              Promedio/día
+              Promedio/día 📅
             </p>
             <p className="text-4xl font-bold text-gray-100">
               $<AnimatedCounter to={Math.ceil(averageTicketsPerDay)} />
             </p>
           </div>
           <div className="w-full text-center">
-            <p className="text-sm font-medium text-gray-100">Usuario</p>
+            <p className="text-sm font-medium text-gray-100">Usuario 👤</p>
             <p className="text-3xl font-bold text-gray-100">
-              {mostProductiveUser.name}
+              {mostProductiveUser.name || "---"}
             </p>
           </div>
         </div>
       </div>
       <MetricCard
-        title="Total Bruto"
+        title="Total Bruto 💵"
         value={totalTickets}
         change={33}
         isPositive={true}
       />
       <MetricCard
-        title="Total Neto"
+        title="Total Neto 💸"
         value={netTotal}
         change={24}
         isPositive={false}

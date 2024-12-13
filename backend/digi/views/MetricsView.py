@@ -4,12 +4,11 @@ from ..models import Payment, Ticket, User
 from rest_framework.response import Response
 from ..serializers import MetricsSerializer
 from django.db.models import Q
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 from rest_framework.decorators import action
 from django.db.models import Avg, Sum, Count
 from django.db.models.functions import ExtractWeek, ExtractYear
 from django.utils import timezone
-
 
 today = date.today()
 first_current_week_date = today - timedelta(days=today.weekday())
@@ -19,17 +18,12 @@ class MetricsViewSet(viewsets.GenericViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = MetricsSerializer
 
-    
-
     def get_queryset(self):
         range_filter = self.request.query_params.get('range', (first_current_week_date, last_current_week_date))
-        
         queryset = Ticket.objects.filter(created_at__range=range_filter)
-
 
         if not self.request.user.is_superuser:
             queryset = queryset.filter(collaborator=self.request.user)
-
 
         return queryset
 
@@ -41,10 +35,6 @@ class MetricsViewSet(viewsets.GenericViewSet):
             last_month_date = today.replace(year=today.year + 1, month=1, day=1) - timedelta(days=1)
         else:
             last_month_date = today.replace(month=today.month + 1, day=1) - timedelta(days=1)
-        # total_yesterday = tickets_data.filter(created_at__gte=today - timedelta(days=1)).select_related('payment')        
-        # total_past_week = tickets_data.filter(
-        #                                     Q(created_at__lt=first_current_week_date - timedelta(days=7)) &
-        #                                     Q(created_at__gte=last_current_week_date - timedelta(days=6)))
         
         total_month = Ticket.objects.filter(created_at__range=(first_month_date, last_month_date)) 
     
@@ -54,25 +44,32 @@ class MetricsViewSet(viewsets.GenericViewSet):
             "month": total_month,
         }
 
-
     def list(self, request):
         try:
             data = self.filter_tickets()
-            serializer = self.serializer_class(data)
+            serializer = MetricsSerializer(data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
+            print("error", e)
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def line(self, request):
         users = User.objects.filter(is_staff=False, is_superuser=False) if request.user.is_staff else [request.user]
         data = {}
+        start = request.query_params.get('start')
+        end = request.query_params.get('end')
+
+        if start and end:
+            start = datetime.strptime(start, '%Y-%m-%d').date()
+            end = datetime.strptime(end, '%Y-%m-%d').date()
+        else:
+            start = first_current_week_date
+            end = last_current_week_date
 
         for i in range(7):
             try:
-                date_to_filter = first_current_week_date + timedelta(days=i)
+                date_to_filter = start + timedelta(days=i)
                 for user in users:
 
                     tickets = Ticket.objects.filter(created_at__date=date_to_filter.strftime("%Y-%m-%d"), collaborator=user)

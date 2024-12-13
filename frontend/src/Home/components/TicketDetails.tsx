@@ -33,24 +33,24 @@ export const TicketDetails: React.FC = () => {
     return (
       <div className="h-full overflow-y-auto px-6 py-4 space-y-6">
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Tipo de Ticket</h3>
+          <h3 className="text-lg font-semibold">Tipo de Ticket 🎟️</h3>
           <div className="inline-block px-2 py-1 text-sm font-medium bg-gray-100 rounded-full">
             {category.name}
           </div>
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Monto</h3>
+          <h3 className="text-lg font-semibold">Monto 💰</h3>
           <p className="text-2xl font-bold">${payment.amount}</p>
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Descripción</h3>
+          <h3 className="text-lg font-semibold">Descripción 📝</h3>
           <p className="text-gray-600">{description || "Sin descripción"}</p>
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Usuario</h3>
+          <h3 className="text-lg font-semibold">Usuario 👤</h3>
           <div className="flex items-center space-x-2">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white"
@@ -64,24 +64,24 @@ export const TicketDetails: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Estado del Pago</h3>
+          <h3 className="text-lg font-semibold">Estado del Pago ✅</h3>
           {getStatus(parseInt(payment.status))}
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Tipo de Pago</h3>
+          <h3 className="text-lg font-semibold">Tipo de Pago 💳</h3>
           <div className="inline-block px-2 py-1 text-sm font-medium bg-gray-100 rounded-full">
             {payment.type}
           </div>
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Fecha de Creación</h3>
+          <h3 className="text-lg font-semibold">Fecha de Creación 📅</h3>
           <p>{formatDate(created_at)}</p>
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Última Actualización</h3>
+          <h3 className="text-lg font-semibold">Última Actualización 🔄</h3>
           <p>{formatDate(updated_at)}</p>
         </div>
       </div>

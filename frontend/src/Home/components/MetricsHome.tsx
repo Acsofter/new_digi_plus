@@ -1,14 +1,7 @@
 "use client";
 
 import { cloneElement, useEffect, useState } from "react";
-import {
-  ArrowUpRight,
-  ClockArrowDown,
-  DollarSign,
-  Percent,
-  Ticket,
-  TicketX,
-} from "lucide-react";
+import { ArrowUpRight, ClockIcon as ClockArrowDown, DollarSign, Percent, Ticket, TicketX } from 'lucide-react';
 import { useHome } from "../contexts/HomeContext";
 import AnimatedCounter from "./AnimatedCounter";
 import { motion } from "framer-motion";
@@ -38,23 +31,23 @@ const DailyTicketsCard = ({ metrics }: { metrics: MetricsInterface }) => {
   const items = [
     {
       icon: DollarSign,
-      label: "Bruto",
+      label: "💰 Bruto",
       value: metrics.today.gross.approved,
       format: true,
     },
-    { icon: Percent, label: "Porc.", value: metrics.today.net.approved },
-    { icon: Ticket, label: "Tickets", value: metrics.today.tickets.approved },
+    { icon: Percent, label: "📊 Porc.", value: metrics.today.net.approved },
+    { icon: Ticket, label: " 🎟️ Tickets", value: metrics.today.tickets.approved },
     {
       icon: ClockArrowDown,
-      label: "Pend.",
+      label: "⏳ Pend.",
       value: metrics.today.pending.total,
     },
-    { icon: TicketX, label: "Cancel.", value: metrics.today.cancelled.total },
+    { icon: TicketX, label: "❌ Cancel. ", value: metrics.today.cancelled.total },
   ];
 
   return (
     <div className="bg-gradient-to-t from-slate-50 text-slate-600 to-white rounded-xl shadow-lg  shadow-slate-200 p-6 space-y-4">
-      <h2 className="text-xl font-bold  ">Tickets del día</h2>
+      <h2 className="text-xl font-bold">Tickets del día 📅</h2>
       <div className="grid grid-cols-2 gap-4">
         {items.map((item, index) => (
           <div
@@ -62,10 +55,10 @@ const DailyTicketsCard = ({ metrics }: { metrics: MetricsInterface }) => {
             className="flex items-center justify-between text-xs md:text-sm"
           >
             <div className="flex items-center space-x-2 text-indigo-500">
-              <item.icon className="hidden md:inline " />
-              <span className=" text-gray-600 ">{item.label}</span>
+              {/* <item.icon className="hidden md:inline" /> */}
+              <span className="text-gray-600">{item.label}</span>
             </div>
-            <span className="font-bold ">
+            <span className="font-bold">
               {item.format
                 ? `$${new Intl.NumberFormat().format(item.value)}`
                 : item.value}
@@ -79,8 +72,8 @@ const DailyTicketsCard = ({ metrics }: { metrics: MetricsInterface }) => {
        <Link
         to={"/dashboard"}
       >
-         Ver Estadísticas
-        <ArrowUpRight size={16} className="ml-1 inline " />
+         Ver Estadísticas 
+        <ArrowUpRight size={16} className="ml-1 inline" />
       </Link>
      </span>
        
@@ -92,20 +85,20 @@ const MetricCard = ({ name, icon: Icon, approved, total, color }: Card) => {
   const percentage = Math.round((approved / total) * 100);
 
   return (
-    <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 `}>
+    <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           {cloneElement(Icon, {
-            className: ` ${Icon.props.className} inline text-center w-full size-7`,
+            className: `${Icon.props.className} inline text-center w-full size-7`,
           })}
-          <h3 className="text-lg font-bold">{name}</h3>
+          <h3 className="text-lg font-bold">{name} 📈</h3>
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold">
-            {<AnimatedCounter to={approved} />}
+            {<AnimatedCounter to={approved} />} 
           </p>
           <p className="text-sm opacity-75">
-            de {<AnimatedCounter to={total} />}
+            de {<AnimatedCounter to={total} />} 🎯
           </p>
         </div>
       </div>
@@ -125,7 +118,7 @@ const MetricCard = ({ name, icon: Icon, approved, total, color }: Card) => {
           ></motion.div>
         </div>
       </div>
-      <p className="text-right text-sm mt-1">{percentage || 0}% completado</p>
+      <p className="text-right text-sm mt-1">{percentage || 0}% completado 🚀</p>
     </div>
   );
 };

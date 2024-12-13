@@ -5,6 +5,9 @@ import App from "./App.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import { WebsocketProvider } from "./contexts/WebsocketContext.tsx";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
@@ -12,5 +15,6 @@ createRoot(document.getElementById("root")!).render(
         <App />
       </WebsocketProvider>
     </AuthProvider>
+    <ToastContainer />
   </StrictMode>
 );

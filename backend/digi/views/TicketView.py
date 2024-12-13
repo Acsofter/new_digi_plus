@@ -37,10 +37,10 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         
 
     def create(self, request):
-        week = Week.objects.get_or_create(week_number=today.isocalendar().week, collaborator=request.user, )[0]
-        if not payment_data.get('amount', None): return Response({"amount": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+        week = Week.objects.get_or_create(week_number=today.isocalendar().week, collaborator=request.user)[0]
 
         payment_data = request.data.pop('payment', {})
+        if not payment_data.get('amount', None): return Response({"amount": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
         payment_details = {
             'type': payment_data.get('type', 'Efectivo'),
             'amount': payment_data.get('amount'),
@@ -50,14 +50,14 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         }
      
         payment = Payment.objects.create(**payment_details)
-
-        request.data = {
-            **request.data,
-            payment: payment.id,
-            'collaborator': request.user.id
-        }
         
-        serializer = self.serializer_class(data=request.data)
+
+       
+        serializer = self.serializer_class(data={
+            **request.data,
+            'payment': payment.id,
+            'collaborator': request.user.id
+        })
 
         if serializer.is_valid():
             serializer.save()
@@ -78,8 +78,8 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         ticket = get_object_or_404(Ticket, pk=pk)
 
         payment_data = request.data.get('payment', {})
-
         status_found = payment_data.get('status')
+        
         del request.data['payment']
         if not status_found:
             return Response({"status": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)

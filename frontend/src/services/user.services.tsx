@@ -18,13 +18,14 @@ export const apiRequest = async <T, Data = unknown>(
       ? response.data
       : false;
   } catch (error) {
+    
     console.error("API request error:", error);
     return false;
   }
 };
 
 export const useUserServices = () => {
-  const { sendMessage } =   useWebsockets();
+  const { sendMessage } = useWebsockets();
 
   const getWeekNumber = (date: Date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
@@ -188,13 +189,17 @@ export const useUserServices = () => {
 
   const getGraph = async ({
     graphname,
+    start,
+    end,
     allusers = false,
   }: {
     graphname: string;
     allusers?: boolean;
+    start: string;
+    end: string;
   }): Promise<UserData[] | false> => {
     return await apiRequest<any>("get", `/metrics/${graphname}/`, {
-      params: { allusers },
+      params: { allusers, start, end },
     });
   };
 
@@ -232,18 +237,40 @@ export const useUserServices = () => {
     collaborator: number;
     week: number;
   }) => {
-    return await apiRequest<any>("post", `/payments/generate_payment/`, {
-      collaborator,
-      week,
-    });
+    const reponse = await apiRequest<any>(
+      "post",
+      `/payments/generate_payment/`,
+      {
+        data: {
+          collaborator,
+          week,
+        },
+      }
+    );
+    if (reponse) {
+      sendMessage({
+        type: "payment_for_user",
+        message: "Pago creado",
+        payload: { payment: reponse },
+      });
+      return reponse;
+    }
   };
 
   const generatePaymentForAll = async ({ week }: { week: number }) => {
-    return await apiRequest<any>(
+    const response = await apiRequest<any>(
       "post",
       `/payments/generate_payment_for_all/`,
-      { week }
+      { data: { week } }
     );
+    if (response) {
+      sendMessage({
+        type: "payment_for_all",
+        message: "Pago creado",
+        payload: { payment: response },
+      });
+      return response;
+    }
   };
 
   const getWeek = async ({ week }: { week: number }) => {
@@ -274,12 +301,11 @@ export const useUserServices = () => {
     return response;
   };
 
-  const handlePagination = async (
-    url: string 
-  ): Promise<PaginatedResponse<Ticket> | false>  => {
-    const response = await apiRequest<PaginatedResponse<Ticket>>("get", url);
+  const handlePagination = async (url: string) => {
+    const response = await axios.get(url, { headers: AuthHeader() });
+
     if (response) {
-      return response;
+      return response.data;
     }
     return false;
   };

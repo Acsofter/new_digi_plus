@@ -6,6 +6,8 @@ import {
   useState,
 } from "react";
 import { useUserServices } from "../../services/user.services";
+import { Circle } from "lucide-react";
+import { useWebsockets } from "../../contexts/WebsocketContext";
 
 export const PaymentContext = createContext<any | null>(null);
 
@@ -17,10 +19,13 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     getUsers,
     getWeekNumber,
     getReport,
-    // generatePaymentForUser,
-    // generatePaymentForAll,
+    generatePaymentForUser,
+    generatePaymentForAll,
     getWeek,
+    handlePagination,
   } = useUserServices();
+
+  const { wsState, lastMessage } = useWebsockets();
   const [users, setUsers] = useState<User[]>([]);
   const [currentWeek, setCurrentWeek] = useState({ is_paid: false });
   const [filters, setFilters] = useState<{
@@ -39,6 +44,20 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     previous: null,
     results: [],
   });
+
+  const onHandleNextPagination = async () => {
+    if (payments.next) {
+      const response = await handlePagination(payments.next);
+      if (response) setPayments(response );
+    }
+  };
+
+  const onHandlePreviousPagination = async () => {
+    if (payments.previous) {
+      const response = await handlePagination(payments.previous);
+      if (response) setPayments(response );
+    }
+  };
 
   const getStatus = (status: number) => {
     switch (status) {
@@ -144,33 +163,44 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  // useEffect(() => {
-  //   const lastMessage = state.ws.lastMessage;
-  //   if (!lastMessage) return;
-  //   switch (lastMessage.type) {
-  //     case "user_added":
-  //     case "user_updated":
-  //       fetchUsers();
-  //       break;
-  //     case "payment_added":
-  //     case "payment_updated":
-  //     case "payment_for_all":
-  //     case "payment_for_user":
-  //     case "ticket_added":
-  //     case "ticket_updated":
-  //       fetchPayments();
-  //       getCurrentWeek();
-  //       break;
-  //     default:
-  //       break;
-  //   }
+  useEffect(() => {
+    if (!wsState.lastMessage) return;
+    const lastMessage = JSON.parse(wsState.lastMessage.data);
+    switch (lastMessage.type) {
+      case "user_added":
+      case "user_updated":
+        fetchUsers();
+        break;
+      case "payment_added":
+      case "payment_updated":
+      case "payment_for_all":
+      case "payment_for_user":
+      case "ticket_added":
+      case "ticket_updated":
+        fetchPayments();
+        getCurrentWeek();
+        break;
+      default:
+        break;
+    }
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [state.ws.lastMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wsState]);
 
   const handleDateChange = (startDate: Date, endDate: Date) => {
     const week = getWeekNumber(startDate);
     setFilters({ ...filters, week });
+  };
+
+  const onHandleGeneratePayment = () => {
+    if (filters.collaborator) {
+      generatePaymentForUser({
+        collaborator: filters.collaborator,
+        week: filters.week,
+      });
+    } else {
+      generatePaymentForAll({ week: filters.week });
+    }
   };
 
   const contextValue = {
@@ -182,6 +212,9 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     currentWeek,
     users,
     getStatus,
+    onHandleGeneratePayment,
+    onHandlePreviousPagination,
+    onHandleNextPagination,
 
     title: "Payment",
   };

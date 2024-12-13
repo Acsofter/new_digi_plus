@@ -1,17 +1,12 @@
 import { useState } from "react";
-const getWeekDates = (date: Date): [Date, Date] => {
-  const start = new Date(date);
-  start.setDate(date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1));
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  return [start, end];
-};
+import { useUserServices } from "../../services/user.services";
+import { useDashboard } from "../contexts/DashboardContext";
 
-const useDatePicker = (onChange: (startDate: Date, endDate: Date) => void) => {
+const useDatePicker = () => {
+  const { setSelectedWeek, selectedWeek, getWeekDates } = useDashboard();
+
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedWeek, setSelectedWeek] = useState<[Date, Date]>(
-    getWeekDates(currentDate)
-  );
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handlePrevMonth = () => {
@@ -29,7 +24,6 @@ const useDatePicker = (onChange: (startDate: Date, endDate: Date) => void) => {
   const handleSelectWeek = (date: Date) => {
     const [start, end] = getWeekDates(date);
     setSelectedWeek([start, end]);
-    onChange(start, end);
   };
 
   return {

@@ -21,6 +21,7 @@ import {
   useState,
 } from "react";
 import { useUserServices } from "../../services/user.services";
+import { getISOWeek } from "date-fns";
 
 const initialMetricsState: MetricsInterface = {
   today: {
@@ -64,11 +65,18 @@ const initialForm = {
 
 export const HomeContext = createContext<any | null>(null);
 
+// Function to get the current week number
+const getWeekNumber = () => {
+  const currentDate = new Date();
+  return getISOWeek(currentDate); // Returns the ISO week number
+};
+
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { wsState } = useWebsockets();
   const { user } = useAuthentication();
+  const { getWeek } = useUserServices();
   const {
     getMetrics,
     getTickets,
@@ -78,8 +86,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   } = useUserServices();
   const [ticketSelected, setTicketSelected] = useState<Ticket | null>(null);
   const [addTicketModal, setAddTicketModal] = useState(false);
+
   const [metrics, setMetrics] = useState<MetricsInterface>(initialMetricsState);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [currentWeek, setCurrentWeek] = useState({ is_paid: false });
   const { createTicket } = useUserServices();
   const quickAmounts = [25, 30, 35, 50, 75, 100, 200, 500];
   const [form, setForm] = useState(initialForm);
@@ -97,6 +107,13 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
       if (response) setCategories(response.results);
     } catch (error) {
       console.error("Error fetching category:", error);
+    }
+  };
+
+  const getCurrentWeek = async () => {
+    const response = await getWeek({ week: getWeekNumber() });
+    if (response) {
+      setCurrentWeek(response);
     }
   };
 
@@ -158,7 +175,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     switch (status) {
       case 1:
         return (
-          <div className="inline-flex gap-1 font-semibold w-full">
+          <div className="inline-flex flex-nowrap gap-1 font-semibold w-full">
             <div className="auto-center px-2 py-1 bg-indigo-100 border border-indigo-200 rounded-full text-indigo-500 text-[.6rem] md:text-xs ">
               <Circle className="w-3 h-2 hidden md:inline" /> Pendiente
             </div>
@@ -166,7 +183,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         );
       case 2:
         return (
-          <div className="inline-flex items-center gap-1 font-semibold w-full">
+          <div className="inline-flex flex-nowrap items-center gap-1 font-semibold w-full">
             <div className="auto-center px-2 py-1 bg-teal-100 border border-teal-200 rounded-full text-teal-500 text-[.6rem] md:text-xs">
               <Circle className="w-3 h-2 hidden md:inline" /> Aprobado
             </div>
@@ -174,7 +191,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         );
       case 3:
         return (
-          <div className="inline-flex items-center gap-1 font-semibold w-full">
+          <div className="inline-flex flex-nowrap items-center gap-1 font-semibold w-full">
             <div className="auto-center px-2 py-1 bg-rose-100 border border-rose-200 rounded-full text-rose-500 text-[.6rem] md:text-xs">
               <Circle className="w-3 h-2 hidden md:inline" /> Rechazado
             </div>
@@ -190,6 +207,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const approveTicket = async (id: number) => {
+    if (currentWeek.is_paid) return;
     try {
       const response = await updateTicketStatus(id, 2);
       if (response) {
@@ -201,6 +219,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const rejectTicket = async (id: number) => {
+    if (currentWeek.is_paid) return;
     try {
       const response = await updateTicketStatus(id, 3);
       if (response) {
@@ -367,7 +386,9 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
                 ) : (
                   <>
                     <button
-                      disabled={ticket.payment.status === "2"}
+                      disabled={
+                        ticket.payment.status === "2" || currentWeek.is_paid
+                      }
                       className={`w-4 h-4 text-teal-500 cursor-pointer inline mr-1 disabled:text-gray-400 hover:opacity-85 disabled:cursor-default`}
                       onClick={() => approveTicket(ticket.id)}
                     >
@@ -375,7 +396,9 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
                     </button>
 
                     <button
-                      disabled={ticket.payment.status === "3"}
+                      disabled={
+                        ticket.payment.status === "3" || currentWeek.is_paid
+                      }
                       className={`w-4 h-4 inline mr-1 text-rose-500 cursor-pointer hover:opacity-85 disabled:text-gray-400 disabled:cursor-default`}
                       onClick={() => rejectTicket(ticket.id)}
                     >
@@ -430,25 +453,26 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     if (wsState.lastMessage) {
-      const { lastMessage } = wsState;
+      const lastMessage = JSON.parse(wsState.lastMessage.data);
+
       switch (lastMessage.type) {
         case "ticket_added":
         case "ticket_updated":
         case "ticket_deleted":
           fetchTickets();
           fetchMetrics();
+          getCurrentWeek();
           break;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsState]);
 
-
-
   useEffect(() => {
     fetchMetrics();
     fetchTickets();
     fetchCategories();
+    getCurrentWeek();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -478,6 +502,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     getStatus,
     approveTicket,
     rejectTicket,
+    currentWeek,
 
     title: "Home",
   };

@@ -11,8 +11,15 @@ import {
   Tooltip,
 } from "chart.js";
 
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useUserServices } from "../../services/user.services";
+import { data } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -30,12 +37,12 @@ export const DashboardContext = createContext<any | null>(null);
 
 interface LineChartData {
   labels: string[];
-  datasets: any[]; 
+  datasets: any[];
 }
 
 interface BarChartData {
   labels: string[];
-  datasets: any[]; 
+  datasets: any[];
 }
 
 interface DoughnutChartData {
@@ -51,7 +58,6 @@ interface MostProductiveUser {
   total: number;
   name: string;
 }
-
 
 export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -75,9 +81,22 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
   const { getGraph } = useUserServices();
   const [users, setUsers] = useState<UserData[]>([]);
 
+  const getWeekDates = (date: Date): [Date, Date] => {
+    const start = new Date(date);
+    start.setDate(
+      date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1)
+    );
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return [start, end];
+  };
+
+  const [selectedWeek, setSelectedWeek] = useState<[Date, Date]>(
+    getWeekDates(new Date())
+  );
 
   const fetchData = async () => {
-    const metrics = await getGraph({ graphname: "line" });
+    const metrics = await getGraph({ graphname: "line", start: selectedWeek[0].toISOString().split("T")[0], end: selectedWeek[1].toISOString().split("T")[0] });
     if (metrics) {
       setUsers(metrics);
       const totalTickets = metrics.reduce(
@@ -126,8 +145,8 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    fetchData()
-  },[])
+    fetchData();
+  }, [selectedWeek]);
 
   const contextValue = {
     title: "Dashboard",
@@ -137,6 +156,9 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
     mostProductiveUser,
     averageTicketsPerDay,
     totalTickets,
+    setSelectedWeek,
+    selectedWeek,
+    getWeekDates,
   };
 
   return (

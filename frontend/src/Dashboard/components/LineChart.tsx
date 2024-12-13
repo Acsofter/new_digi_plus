@@ -90,7 +90,7 @@ export const LineChart = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Actividad Semanal</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">📊 Actividad Semanal</h2>
         </div>
         <div className="p-6">
           <div className="h-80 w-full">
@@ -103,7 +103,7 @@ export const LineChart = () => {
                     ...chartOptions.plugins,
                     title: {
                       ...chartOptions.plugins.title,
-                      text: "Usuario por Monto Semanal",
+                      text: "👤 Usuario por Monto Semanal",
                     },
                   },
                 }}
@@ -111,7 +111,7 @@ export const LineChart = () => {
             ) : (
               <div className="flex items-center justify-center h-full">
                 <span className="text-gray-500 text-sm animate-pulse">
-                  Cargando...
+                  ⏳ Cargando...
                 </span>
               </div>
             )}

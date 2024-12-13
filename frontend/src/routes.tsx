@@ -15,6 +15,8 @@ import NotFound from "./pages/not-found";
 import { Dashboard } from "./pages/Dashboard";
 import { Help } from "./pages/Help";
 import { Payments } from "./pages/Payments";
+import { Settings } from "./pages/Settings";
+import { Profile } from "./pages/Profile";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
   const { authenticated, loading } = useAuthentication();
@@ -77,7 +79,23 @@ const AppRoutes: React.FC = () => {
               </PrivateRoute>
             }
           />
-          <Route path="*" element={<Home />} />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route path="*" element={<Home />} /> */}
         </Routes>
       </Layout>
     </Router>

@@ -33,7 +33,8 @@ export const Sidebar = () => {
           ))}
       </div>
 
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 md:gap-4">
+        <span className="text-xs text-white ">{user && user.username}</span>
         <motion.div
           className="relative"
           whileHover={{ scale: 1.1 }}

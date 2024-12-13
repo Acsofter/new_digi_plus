@@ -51,7 +51,8 @@ export const Login = () => {
         </div>
 
         {/* Right side */}
-        <div className="w-full lg:w-1/3 p-8 lg:p-16 bg-gray-50 dark:bg-gray-700 flex flex-col items-center justify-center">
+        <div className="w-full lg:w-1/3 p-8 lg:p-16 bg-gray-50 dark:bg-gray-700 flex flex-col items-center justify-center h-full">
+        <h2 className="text-4xl font-bold mb-6 dark:text-white">Iniciar sesión</h2>
           <form
             onSubmit={(e) => {
               e.preventDefault();

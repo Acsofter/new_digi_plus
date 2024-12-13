@@ -1,18 +1,12 @@
-import React from "react";
 import {
-  Ban,
-  Eye,
-  ChevronUp,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Eye
 } from "lucide-react";
 import { usePayment } from "../contexts/PaymentContext";
-import { useUserServices } from "../../services/user.services";
 
 export const PaymentsTable = () => {
-  const { payments, getBadge, getStatus } = usePayment();
-  const { handlePagination } = useUserServices();
+  const { payments, getStatus, onHandlePreviousPagination, onHandleNextPagination } = usePayment();
 
   return (
     <div className="overflow-x-auto shadow-md rounded-lg">
@@ -38,7 +32,7 @@ export const PaymentsTable = () => {
         </thead>
         <tbody>
           {payments &&
-            payments.results.map((payment, index) => (
+            payments.results.map((payment, index: number) => (
               <tr
                 key={payment.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -54,13 +48,9 @@ export const PaymentsTable = () => {
                   {payment.ticket?.collaborator?.username || "N/A"}
                 </td>
                 <td className="px-6 py-4">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getBadge(
-                      getStatus(payment.status)
-                    )}`}
-                  >
-                    {payment.status}
-                  </span>
+                  
+                    {getStatus(parseInt(payment.status))}
+                  
                 </td>
                 <td className="px-6 py-4">
                   {payment.ticket?.description || "N/A"}
@@ -100,14 +90,14 @@ export const PaymentsTable = () => {
             <div className="inline-flex px-2 ">
               <button
                 className="w-5"
-                onClick={() => handlePagination(payments.previous)}
+                onClick={onHandlePreviousPagination}
               >
                 <ChevronLeft size={16} />
               </button>
 
               <button
                 className=" w-5"
-                onClick={() => handlePagination(payments.next)}
+                onClick={onHandleNextPagination}
               >
                 <ChevronRight size={16} />
               </button>

@@ -15,6 +15,7 @@ export const TicketPayment = () => {
     closeAddTicketModal,
     handleSubmit,
     quickAmounts,
+    currentWeek
   } = useHome();
   const { user, company } = useAuthentication();
 
@@ -27,7 +28,7 @@ export const TicketPayment = () => {
             htmlFor="ticket-type"
             className="block text-sm text-gray-600 mb-2"
           >
-            Tipo de Ticket
+            Tipo de Ticket 🎟️
           </label>
           <select
             id="ticket-type"
@@ -38,10 +39,11 @@ export const TicketPayment = () => {
                 changes: { category: Number(e.target.value) },
               })
             }
-            className="w-full p-3 border rounded-lg bg-white"
+            className={`w-full p-3 border rounded-lg bg-white ${currentWeek.is_paid ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={currentWeek.is_paid}
           >
             <option value="" disabled>
-              Seleccionar tipo de ticket
+              Seleccionar tipo de ticket 🆕
             </option>
             {categories.map((category: Category) => (
               <option key={category.id} value={category.id}>
@@ -67,8 +69,9 @@ export const TicketPayment = () => {
                   },
                 })
               }
-              className="w-full p-3 border rounded-lg text-lg bg-white"
+              className={`w-full p-3 border rounded-lg text-lg bg-white ${currentWeek.is_paid ? 'opacity-50 cursor-not-allowed' : ''}`}
               placeholder="Enter amount"
+              disabled={currentWeek.is_paid}
             />
             <div className="grid grid-cols-4 gap-2 mb-4">
               {quickAmounts.map((amount: number) => (
@@ -102,8 +105,9 @@ export const TicketPayment = () => {
               handleChanges({ changes: { description: e.target.value } })
             }
             placeholder="Ingrese una descripción del ticket"
-            className="w-full p-3 min-h-20 border rounded-lg bg-white"
+            className={`w-full p-3 min-h-20 border rounded-lg bg-white ${currentWeek.is_paid ? 'opacity-50 cursor-not-allowed' : ''}`}
             rows={3}
+            disabled={currentWeek.is_paid}
           />
         </div>
 
@@ -119,7 +123,7 @@ export const TicketPayment = () => {
               >
                 <div className="w-4 h-4  bg-white rounded-xl" />
               </div>
-              <span>{user?.username}</span>
+              <span>{user?.username} 👤</span>
             </div>
           </div>
         </div>
@@ -127,7 +131,7 @@ export const TicketPayment = () => {
         <div className="space-y-3 mb-4 ">
           <div className="flex justify-between text-indigo-600">
             <span>
-              Subtotal{" "}
+              Subtotal{" "}💵
               <div className="size-3 bg-indigo-100 inline-block rounded-full" />
             </span>
 
@@ -136,7 +140,7 @@ export const TicketPayment = () => {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <span>
-                Descuento ({100 - (company?.collaborator_percentage || 0)}%)
+                Descuento (-{100 - (company?.collaborator_percentage || 0)}%) 
               </span>
             </div>
             <span>
@@ -144,7 +148,7 @@ export const TicketPayment = () => {
             </span>
           </div>
           <div className="flex justify-between font-bold">
-            <span>Total</span>
+            <span>Total 🏷️</span>
             <span>
               ${" "}
               {form.payment.amount *
@@ -155,13 +159,14 @@ export const TicketPayment = () => {
 
         <button
           onClick={(e) => handleSubmit(e)}
-          className="w-full bg-gradient-to-tr from-indigo-700 to-indigo-500 shadow shadow-indigo-500 border border-indigo-700 text-white rounded-lg p-3 font-medium hover:bg-indigo-700"
+          className={`w-full bg-gradient-to-tr from-indigo-700 to-indigo-500 shadow shadow-indigo-500 border border-indigo-700 text-white rounded-lg p-3 font-medium hover:bg-indigo-700 ${currentWeek.is_paid ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={currentWeek.is_paid}
         >
-          Añadir
+          Añadir ➕
         </button>
       </div>
     );
-  }, [form, handleChanges]);
+  }, [form, handleChanges, currentWeek.is_paid]);
 
   return (
     <AnimatePresence>

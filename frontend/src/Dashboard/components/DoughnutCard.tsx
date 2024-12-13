@@ -31,7 +31,7 @@ export const DoughnutCard = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-          Distribución de Usuarios
+          Distribución de Usuarios 🎉
         </h2>
         {/* <div className="flex-grow">
           {Object.keys(doughnutChartData).length > 0 && (

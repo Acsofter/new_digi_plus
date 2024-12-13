@@ -16,6 +16,7 @@ import {
 import { removeAuthToken, setAuthToken } from "../services/auth.header";
 import { isUserAuthenticated, login } from "../services/auth.services";
 import { apiRequest } from "../services/user.services";
+import { toast } from "react-toastify";
 export const AuthContext = createContext<any | null>(null);
 
 interface AuthProviderProps {
@@ -86,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user?.token) {
         setAuthToken(user.token);
         window.location.href = "/home";
-      }
+      }       
     } catch (error) {
       console.error("Login error:", error);
     } finally {

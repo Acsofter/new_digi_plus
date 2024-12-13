@@ -116,16 +116,19 @@
             {{ company.address|default:"N/A" }}
           </td>
         </tr>
+       
       </tbody>
     </table>
     <br /><br />
     <h2 class="ticket-header">REPORTE DE PAGO</h2>
     
+    <h3>Semana del {{ date_range.start }} al {{ date_range.end }}</h3>
+    
+    
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th>Semana</th>
           <th>Pago</th>
           <th>Descripcion</th>
           <th>Categoria</th>
@@ -138,7 +141,6 @@
         {% for item in items %}
         <tr>
           <td>{{ forloop.counter }}</td>
-          <td>{{ item.week.week_number }}</td>
           <td>{{ item.type }}</td>
           <td>{{ "N/A" }}</td>
           <td>{{ item.ticket.category.name }}</td>
@@ -154,23 +156,23 @@
         </tr>
         {% endfor %}
         <tr>
-          <td colspan="7" class="total-name">Total Pendientes</td>
+          <td colspan="6" class="total-name">Total Pendientes</td>
           <td class="total-details">{{ total.pending }}</td>
         </tr>
         <tr>
-          <td colspan="7" class="total-name">Total Rechazados</td>
+          <td colspan="6" class="total-name">Total Rechazados</td>
           <td class="total-details">{{ total.rejected }}</td>
         </tr>
         <tr>
-          <td colspan="7" class="total-name">Subtotal</td>
+          <td colspan="6" class="total-name">Subtotal</td>
           <td class="total-details">{{ total.approved }}</td>
         </tr>
         <tr>
-          <td colspan="7" class="rejected total-name">Restante ({{percentage}}%)</td>
+          <td colspan="6" class="rejected total-name">Restante ({{percentage}}%)</td>
           <td class="rejected total-details">- {{ total.company }}</td>
         </tr>
         <tr style="font-size: 16px; font-weight: bold">
-          <td colspan="7" class="total-name">Total</td>
+          <td colspan="6" class="total-name">Total</td>
           <td class="total-details">{{ total.neto }}</td>
         </tr>
       </tbody>

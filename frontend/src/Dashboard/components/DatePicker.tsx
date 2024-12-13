@@ -8,16 +8,14 @@ interface DatePickerProps {
   onChange: (startDate: Date, endDate: Date) => void;
 }
 
-export const DatePicker: React.FC<DatePickerProps> = ({ onChange }) => {
+export const DatePicker: React.FC<DatePickerProps> = () => {
   const {
     currentDate,
     selectedWeek,
-    isDropdownOpen,
-    setIsDropdownOpen,
     handlePrevMonth,
     handleNextMonth,
     handleSelectWeek,
-  } = useDatePicker(onChange);
+  } = useDatePicker();
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString("es-EN", {
@@ -90,7 +88,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ onChange }) => {
   return (
     <div className="relative ">
       <motion.div className="p-5 text-lg font-semibold text-slate-700 bg-white rounded-2xl shadow-md h-full">
-        <p className="font-bold">Semana Actual</p>
+        <p className="font-bold">Semana Actual 📅</p>
         {selectedWeek &&
           formatDate(selectedWeek[0]) + " al " + formatDate(selectedWeek[1])}
       </motion.div>
@@ -102,22 +100,22 @@ export const DatePicker: React.FC<DatePickerProps> = ({ onChange }) => {
       >
         <div className="flex justify-between items-center py-2 px-5 font-semibold">
           <div className="space-x-3">
-            <button onClick={handlePrevMonth} className="text-sm">
-              <ChevronLeft className="size-3" />
+            <button onClick={handlePrevMonth} className="text-sm" title="Mes Anterior">
+              <ChevronLeft className="size-3" /> 🡸
             </button>
-            <button onClick={handleNextMonth} className="text-sm">
-              <ChevronRight className="size-3" />
+            <button onClick={handleNextMonth} className="text-sm" title="Mes Siguiente">
+              <ChevronRight className="size-3" /> 🡺
             </button>
             <span>
               {currentDate.toLocaleDateString("es-ES", {
                 month: "long",
-              })}
+              })} 🌼
             </span>
           </div>
           <div className="text-gray-400 font-normal">
             {currentDate.toLocaleDateString("es-EN", {
               year: "numeric",
-            })}
+            })} 📆
           </div>
         </div>
         <table className="w-full">
@@ -125,7 +123,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ onChange }) => {
             <tr className="text-slate-600 uppercase">
               {["Lun", "Mar", "Mie", "Juv", "Vie", "Sab", "Dom"].map((day) => (
                 <th key={day} className="p-2 font-normal text-sm">
-                  {day}
+                  {day} 🌞
                 </th>
               ))}
             </tr>
