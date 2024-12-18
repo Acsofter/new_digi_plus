@@ -67,7 +67,7 @@ const DailyTicketsCard = ({ metrics }: { metrics: MetricsInterface }) => {
         ))}
       </div>
      <span
-       className="w-full justify-end m-0 flex text-sm font-medium text-indigo-600 hover:text-indigo-400 transition-colors duration-200 text-right"
+       className="w-full justify-end m-0 hidden md:flex text-sm font-medium text-indigo-600 hover:text-indigo-400 transition-colors duration-200 text-right"
      >
        <Link
         to={"/dashboard"}

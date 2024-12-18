@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ArcElement,
   BarElement,
@@ -11,7 +10,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import { useDashboard } from "../contexts/DashboardContext";
 import { DatePicker } from "./DatePicker";
 

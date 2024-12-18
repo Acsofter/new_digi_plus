@@ -49,14 +49,14 @@ export const DashboardMetrics = () => {
         </div>
         <div className="flex gap-3 w-full content-center items-center justify-items-center">
           <div className="w-full text-center">
-            <p className="text-sm font-medium text-gray-100">Total: 💰</p>
+            <p className="text-sm font-medium text-gray-100">Total: </p>
             <p className="text-4xl font-bold text-gray-100">
               $<AnimatedCounter to={mostProductiveUser.total} />
             </p>
           </div>
           <div className="w-full text-center">
             <p className="text-sm font-medium text-gray-100">
-              Promedio/día 📅
+              Promedio/día
             </p>
             <p className="text-4xl font-bold text-gray-100">
               $<AnimatedCounter to={Math.ceil(averageTicketsPerDay)} />

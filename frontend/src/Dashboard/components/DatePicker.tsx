@@ -101,10 +101,10 @@ export const DatePicker: React.FC<DatePickerProps> = () => {
         <div className="flex justify-between items-center py-2 px-5 font-semibold">
           <div className="space-x-3">
             <button onClick={handlePrevMonth} className="text-sm" title="Mes Anterior">
-              <ChevronLeft className="size-3" /> 🡸
+              <ChevronLeft className="size-3" /> 
             </button>
             <button onClick={handleNextMonth} className="text-sm" title="Mes Siguiente">
-              <ChevronRight className="size-3" /> 🡺
+              <ChevronRight className="size-3" /> 
             </button>
             <span>
               {currentDate.toLocaleDateString("es-ES", {
