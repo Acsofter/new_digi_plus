@@ -12,34 +12,26 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-# from dotenv import load_dotenv
 import os 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 from pathlib import Path
 from decouple import config
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
+
+
 SECRET_KEY = config('SECRET_KEY')
-
 DEBUG = config('DEBUG', default=False, cast=bool)
-
 ALLOWED_HOSTS = ["*"]
-
 ROOT_URLCONF = f'core.urls'
 
 WSGI_APPLICATION = f'core.wsgi.application'
-
 ASGI_APPLICATION = f'core.asgi.application'
 
-
-
 # Application definition
-
 INSTALLED_APPS = [
     'corsheaders',
     'digi.apps.DigiConfig',
@@ -176,8 +168,3 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-# Default primary key field type
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
