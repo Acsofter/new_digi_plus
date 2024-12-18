@@ -12,7 +12,7 @@ class CompanyConsumer(AsyncWebsocketConsumer):
         self.user = self.scope['user']
 
 
-        if self.user.is_anonymous:
+        if self.user:
             await self.close()
 
         self.room_group_name = f'group_{self.room_name}'
