@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { DoorOpen, LogOut } from 'lucide-react'; // Asumiendo que estás usando Lucide icons
+import { DoorOpen } from 'lucide-react'; // Asumiendo que estás usando Lucide icons
+import { useNavigate } from "react-router-dom";
 import noprofile from "../assets/image/noprofile.jpg";
 import { useAuthentication } from "../contexts/AuthContext";
 import { useWebsockets } from "../contexts/WebsocketContext";

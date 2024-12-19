@@ -1,104 +1,106 @@
-// src/pages/Login.tsx
+import React from "react";
 import { motion } from "framer-motion";
-import { LoaderCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
-import login_img from "../assets/login-img.webp";
 import { useAuthentication } from "../contexts/AuthContext";
 
-export const Login = () => {
+export const Login: React.FC = () => {
   const { formLogin, handleChangesLoginForm, login, loading, authenticated } =
     useAuthentication();
 
+  if (authenticated) {
+    return <Navigate to="/home" />;
+  }
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login();
+  };
 
-  return authenticated ? (
-   <Navigate to="/home"/>
-  ) : (
-    <div className="h-screen bg-slate-50 dark:bg-gray-900 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-msl w-full  h-full flex flex-col md:flex-row overflow-hidden">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 h-screen">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden w-full  flex flex-col md:flex-row h-full ">
         {/* Left side */}
-        <div className="hidden md:flex w-full lg:w-2/3 p-8 lg:p-16 items-center relative">
+        <motion.div
+          className="hidden md:flex h-full md:w-4/5 bg-indigo-600 text-white items-center  p-10 relative overflow-hidden"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="relative z-10">
             <motion.h1
-              initial={{ opacity: 0, y: -50 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-5xl lg:text-7xl font-bold mb-6 dark:text-white"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-6xl font-bold mb-4"
             >
               Bienvenido,
               <br />
-              Sigue avanzando!
+              ¡Sigue avanzando!
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-gray-600 dark:text-gray-300 mb-8"
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-indigo-200"
             >
               Por favor, ingrese sus credenciales para acceder a su cuenta.
             </motion.p>
           </div>
-          {/* <div className="h-2/5 lg:h-3/5 w-1/2 bottom-0 right-0 absolute  animate-pulse rounded-tl-3xl" /> */}
-          {
-            <motion.img
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              src={login_img}
-              alt="Login illustration"
-              className="h-2/5 lg:h-3/5 w-1/2 bottom-0 right-0 absolute bg-cover rounded-tl-3xl"
-            />
-          }
-        </div>
+          {/* <motion.img
+            src={LOGIN_IMG_URL}
+            alt="Login illustration"
+            className="absolute bottom-0 right-0 w-2/3 max-h-64 object-contain"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          /> */}
+        </motion.div>
 
         {/* Right side */}
-        <div className="w-full lg:w-1/3 p-8 lg:p-16 bg-gray-50 dark:bg-gray-700 flex flex-col items-center justify-center h-full">
-        <h2 className="text-4xl font-bold mb-6 dark:text-white">Iniciar sesión</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              login();
-            }}
-            className="space-y-6 w-full"
-          >
-            {["username", "password"].map((field) => (
-              <div key={field}>
+        <div className="md:w-1/2 p-8">
+          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+            Iniciar sesión
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {[
+              { id: "username", label: "Usuario", type: "text" },
+              { id: "password", label: "Contraseña", type: "password" },
+            ].map(({ id, label, type }) => (
+              <div key={id} className="space-y-2">
                 <label
-                  htmlFor={field}
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                  htmlFor={id}
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
-                  {field === "username" ? "Usuario" : "Contraseña"}
+                  {label}
                 </label>
                 <input
-                  type={field === "password" ? "password" : "text"}
-                  id={field}
-                  name={field}
-                  value={formLogin[field]}
+                  id={id}
+                  name={id}
+                  type={type}
+                  value={formLogin[id]}
                   onChange={(e) =>
-                    handleChangesLoginForm({ [field]: e.target.value })
+                    handleChangesLoginForm({ [id]: e.target.value })
                   }
-                  className="w-full px-4 h-12 rounded-lg bg-gray-200 dark:bg-gray-600 border focus:bg-white dark:focus:bg-gray-500 focus:outline-indigo-600 dark:text-white transition-colors duration-200"
                   required
-                  aria-required="true"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
             ))}
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-right w-full text-slate-600  dark:text-indigo-400  transition-colors duration-200">
-                Si olvidaste tu contraseña contacta al administrador
-              </span>
+            <div className="text-sm text-right">
+              <a
+                href="#"
+                className="text-indigo-600 hover:underline dark:text-indigo-400"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
             </div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-tr from-indigo-400 to-indigo-600 border border-indigo-300 text-white rounded-lg px-4 h-12 font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-200"
+              className="w-full bg-indigo-600 text-white rounded-md px-4 py-2 font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               disabled={loading}
             >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <LoaderCircle className="animate-spin" />
-                </span>
-              ) : (
-                "Iniciar sesión"
-              )}
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? "Cargando..." : "Iniciar sesión"}
             </button>
           </form>
         </div>

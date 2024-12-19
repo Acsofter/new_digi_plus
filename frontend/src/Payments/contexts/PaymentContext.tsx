@@ -25,7 +25,7 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     handlePagination,
   } = useUserServices();
 
-  const { wsState, lastMessage } = useWebsockets();
+  const { wsState } = useWebsockets();
   const [users, setUsers] = useState<User[]>([]);
   const [currentWeek, setCurrentWeek] = useState({ is_paid: false });
   const [filters, setFilters] = useState<{
@@ -187,7 +187,7 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsState]);
 
-  const handleDateChange = (startDate: Date, endDate: Date) => {
+  const handleDateChange = (startDate: Date) => {
     const week = getWeekNumber(startDate);
     setFilters({ ...filters, week });
   };

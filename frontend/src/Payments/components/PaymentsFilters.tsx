@@ -20,7 +20,7 @@ export const PaymentsFilters = () => {
               }}
             >
               <option value="all">Todos</option>
-              {users.map((user, index) => (
+              {users.map((user: User, index: number) => (
                 <option key={index} value={index} className="capitalize">
                   {user.username}
                 </option>

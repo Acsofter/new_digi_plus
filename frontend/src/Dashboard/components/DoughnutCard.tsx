@@ -81,8 +81,8 @@ export const DoughnutCard = () => {
         </h2>
         <div className="space-y-4">
           {users &&
-            users.map((user) => {
-              const userTotal = user.reduce((a, b) => a + b, 0);
+            users.map((user: any) => {
+              const userTotal = user.reduce((a: number, b: number) => a + b, 0);
               const percentage = (userTotal / totalTickets) * 100;
               return (
                 <div key={user.label} className="space-y-2">

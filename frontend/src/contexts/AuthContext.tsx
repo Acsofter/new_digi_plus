@@ -16,7 +16,6 @@ import {
 import { removeAuthToken, setAuthToken } from "../services/auth.header";
 import { isUserAuthenticated, login } from "../services/auth.services";
 import { apiRequest } from "../services/user.services";
-import { toast } from "react-toastify";
 export const AuthContext = createContext<any | null>(null);
 
 interface AuthProviderProps {
