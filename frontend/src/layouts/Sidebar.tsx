@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut } from 'lucide-react'; // Asumiendo que estás usando Lucide icons
+import { DoorOpen } from 'lucide-react'; // Asumiendo que estás usando Lucide icons
+import { useNavigate } from "react-router-dom";
 import noprofile from "../assets/image/noprofile.jpg";
 import { useAuthentication } from "../contexts/AuthContext";
 import { useWebsockets } from "../contexts/WebsocketContext";
@@ -34,7 +34,7 @@ export const Sidebar = () => {
       </div>
 
       <div className="flex flex-col items-center gap-2 md:gap-4">
-        <span className="text-xs text-white ">{user && user.username}</span>
+        <span className="text-xs text-white  hidden md:block">{user && user.username}</span>
         <motion.div
           className="relative"
           whileHover={{ scale: 1.1 }}
@@ -45,20 +45,20 @@ export const Sidebar = () => {
             alt="profile"
             onClick={() => navigate("/profile")}
             style={{ borderColor: getReadyStateColor() }}
-            className="size-10 md:size-14 rounded-full cursor-pointer border-2 border-indigo-400 transition-all duration-300 hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-500/30"
+            className="size-6 min-w-6 sm:size-14 sm:min-w-14 flex-wrap rounded-full cursor-pointer border-2 border-indigo-400 transition-all duration-300 hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-500/30"
           />
           <span
-            className="absolute top-0 -right-1 size-4 rounded-full border-2 border-slate-950"
+            className="absolute top-0 -right-1 size-4 rounded-full border-2 border-slate-950 hidden sm:block"
             style={{ backgroundColor: getReadyStateColor() }}
           ></span>
         </motion.div>
         <motion.button
           onClick={handleLogout}
-          className="flex items-center justify-center w-full p-2 text-xs text-white bg-rose-600 rounded-md hover:bg-rose-700 transition-colors duration-200"
+          className="flex items-center justify-center w-full p-1 text-xs text-white bg-rose-600 rounded-full hover:bg-rose-700 transition-colors duration-200"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <LogOut size={14} className="mr-1" />
+          <DoorOpen  size={14} className="mr-1" />
         </motion.button>
       </div>
     </motion.div>

@@ -1,17 +1,12 @@
 import { motion } from "framer-motion";
-import { Calendar, ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import useDatePicker from "../hooks/useDatePicker";
-import { format } from "path";
 
-interface DatePickerProps {
-  onChange: (startDate: Date, endDate: Date) => void;
-}
-
-export const DatePicker: React.FC<DatePickerProps> = () => {
+export const DatePicker: React.FC = () => {
   const {
     currentDate,
-    selectedWeek,
+    selectedWeek, 
     handlePrevMonth,
     handleNextMonth,
     handleSelectWeek,
@@ -48,7 +43,7 @@ export const DatePicker: React.FC<DatePickerProps> = () => {
 
     const rows = [];
     let days = [];
-    let day = startDate;
+    const day = startDate;
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
@@ -101,10 +96,10 @@ export const DatePicker: React.FC<DatePickerProps> = () => {
         <div className="flex justify-between items-center py-2 px-5 font-semibold">
           <div className="space-x-3">
             <button onClick={handlePrevMonth} className="text-sm" title="Mes Anterior">
-              <ChevronLeft className="size-3" /> 🡸
+              <ChevronLeft className="size-3" /> 
             </button>
             <button onClick={handleNextMonth} className="text-sm" title="Mes Siguiente">
-              <ChevronRight className="size-3" /> 🡺
+              <ChevronRight className="size-3" /> 
             </button>
             <span>
               {currentDate.toLocaleDateString("es-ES", {

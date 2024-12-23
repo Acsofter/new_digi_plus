@@ -1,4 +1,3 @@
-import { LogIn } from "lucide-react";
 import React from "react";
 import {
   Navigate,
@@ -8,15 +7,15 @@ import {
 } from "react-router-dom";
 import { useAuthentication } from "./contexts/AuthContext";
 import { Layout } from "./layouts/Layout";
+import { AdminPanel } from "./pages/AdminPanel";
+import { Dashboard } from "./pages/Dashboard";
+import { Help } from "./pages/Help";
 import { Home } from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import { Login } from "./pages/Login";
-import NotFound from "./pages/not-found";
-import { Dashboard } from "./pages/Dashboard";
-import { Help } from "./pages/Help";
 import { Payments } from "./pages/Payments";
-import { Settings } from "./pages/Settings";
 import { Profile } from "./pages/Profile";
+import { Settings } from "./pages/Settings";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }): JSX.Element => {
   const { authenticated, loading } = useAuthentication();
@@ -92,6 +91,14 @@ const AppRoutes: React.FC = () => {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminPanel />
               </PrivateRoute>
             }
           />

@@ -1,11 +1,9 @@
-import { useState } from "react";
-import {
-  SearchIcon,
-  ChevronDownIcon,
-  ChevronLeft,
-  ArrowRight,
-} from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  ChevronDownIcon,
+  SearchIcon
+} from "lucide-react";
+import { useState } from "react";
 
 export const Help: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -57,7 +55,7 @@ export const Help: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="h-full">
       <header className="flex justify-between items-center px-6 py-4 border-b dark:text-white">
         <h1 className="text-2xl font-bold">Centro de Ayuda</h1>
       </header>

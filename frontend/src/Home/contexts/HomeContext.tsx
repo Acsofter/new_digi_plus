@@ -1,5 +1,4 @@
-import { useAuthentication } from "../../contexts/AuthContext";
-import { useWebsocket, useWebsockets } from "../../contexts/WebsocketContext";
+import { getISOWeek } from "date-fns";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
@@ -8,20 +7,20 @@ import {
   CircleCheck,
   CircleX,
   DollarSign,
-  Eye,
   Percent,
+  ReceiptText,
   Ticket,
 } from "lucide-react";
 import {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
+import { useAuthentication } from "../../contexts/AuthContext";
+import { useWebsockets } from "../../contexts/WebsocketContext";
 import { useUserServices } from "../../services/user.services";
-import { getISOWeek } from "date-fns";
 
 const initialMetricsState: MetricsInterface = {
   today: {
@@ -99,7 +98,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     useState<PaginatedResponse<Ticket> | null>(null);
   const [responseTicketsApproved, setResponseTicketsApproved] =
     useState<PaginatedResponse<Ticket> | null>(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const fetchCategories = async () => {
     try {
@@ -201,10 +199,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         return "Desconocido";
     }
   };
-
-  const handle_date_change = useCallback((date: Date) => {
-    setSelectedDate(date);
-  }, []);
 
   const approveTicket = async (id: number) => {
     if (currentWeek.is_paid) return;
@@ -342,7 +336,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
             transition={{ duration: 0.3 }}
             className={`bg-white border-b h-16  ${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 `}
           >
-            <td className={`border-l-4 ${color} `}>
+            <td className={`border-l-4  ${color} `}>
               {((response.current || 0) - 1) * 5 + (index + 1)}
             </td>
             <td className="">{getStatus(parseInt(ticket.payment.status))}</td>
@@ -370,42 +364,44 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
               </span>
 
               <span className="inline md:hidden">
-                {new Date(ticket.created_at).toLocaleString("es-EN", {
-                  year: "numeric",
-                  month: "long",
-                })}
+                {
+                  new Date(ticket.created_at)
+                    .toLocaleString("es-EN")
+                    .split(",")[0]
+                }
               </span>
             </td>
             <td className={`border-r-2 ${color} border-spacing-0`}>
-              <div className="flex justify-center gap-1 w-full">
-                {user?.roles.includes("user") ? (
-                  <Eye
-                    className="w-4 h-4 inline mr-1 text-gray-400 cursor-pointer hover:opacity-85"
-                    onClick={() => onSelectTicket(ticket)}
-                  />
-                ) : (
+              <div className="flex flex-wrap justify-center items-center  gap-1 w-full h-full">
+                {user?.roles.includes("staff") && (
                   <>
                     <button
                       disabled={
                         ticket.payment.status === "2" || currentWeek.is_paid
                       }
-                      className={`w-4 h-4 text-teal-500 cursor-pointer inline mr-1 disabled:text-gray-400 hover:opacity-85 disabled:cursor-default`}
+                      className={`  text-teal-500 cursor-pointer inline  disabled:text-gray-400 hover:opacity-85 disabled:cursor-default`}
                       onClick={() => approveTicket(ticket.id)}
                     >
-                      <CircleCheck className="size-4" />
+                      <CircleCheck className="size-3 sm:size-4" />
                     </button>
 
                     <button
                       disabled={
                         ticket.payment.status === "3" || currentWeek.is_paid
                       }
-                      className={`w-4 h-4 inline mr-1 text-rose-500 cursor-pointer hover:opacity-85 disabled:text-gray-400 disabled:cursor-default`}
+                      className={` inline  text-rose-500 cursor-pointer hover:opacity-85 disabled:text-gray-400 disabled:cursor-default`}
                       onClick={() => rejectTicket(ticket.id)}
                     >
-                      <CircleX className="size-4" />
+                      <CircleX className="size-3 sm:size-4" />
                     </button>
                   </>
                 )}
+                <div className="inline text-gray-400 cursor-pointer hover:opacity-85">
+                  <ReceiptText
+                    className=" size-3 sm:size-4"
+                    onClick={() => onSelectTicket(ticket)}
+                  />
+                </div>
               </div>
             </td>
           </motion.tr>
@@ -491,7 +487,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     responseTicketsRejected,
     responseTicketsApproved,
     user,
-    handle_date_change,
     fetchTickets,
     format_tickets,
     categories,

@@ -19,7 +19,6 @@ import {
   useState,
 } from "react";
 import { useUserServices } from "../../services/user.services";
-import { data } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -79,7 +78,6 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
   const [averageTicketsPerDay, setAverageTicketsPerDay] = useState<number>(0);
   const [totalTickets, setTotalTickets] = useState<number>(0);
   const { getGraph } = useUserServices();
-  const [users, setUsers] = useState<UserData[]>([]);
 
   const getWeekDates = (date: Date): [Date, Date] => {
     const start = new Date(date);
@@ -98,7 +96,6 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({
   const fetchData = async () => {
     const metrics = await getGraph({ graphname: "line", start: selectedWeek[0].toISOString().split("T")[0], end: selectedWeek[1].toISOString().split("T")[0] });
     if (metrics) {
-      setUsers(metrics);
       const totalTickets = metrics.reduce(
         (total, user) => total + user.data.reduce((a, b) => a + b, 0),
         0

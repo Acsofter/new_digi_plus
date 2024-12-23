@@ -12,7 +12,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="w-full flex flex-col md:p-6 "
+            className="w-full flex flex-col p-2 md:p-4"
           >
             {children}
           </motion.main>
