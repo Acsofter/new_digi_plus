@@ -12,26 +12,27 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-# from dotenv import load_dotenv
 import os 
+from pathlib import Path
+from decouple import config
 
-# load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = 'static/'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9=ero=cy%ak6$#*vmw(o1tf%l616+dcwe!%)ojxh_8n!tj$m3y'
+STATIC_URL = '/static/'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ["*"]
+ROOT_URLCONF = f'core.urls'
 
+WSGI_APPLICATION = f'core.wsgi.application'
+ASGI_APPLICATION = f'core.asgi.application'
 
 # Application definition
-
 INSTALLED_APPS = [
     'corsheaders',
     'digi.apps.DigiConfig',
@@ -57,12 +58,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'digi.User'
 
-
-ASGI_APPLICATION = 'core.asgi.application'
-
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
     },
 }
 
@@ -97,15 +98,12 @@ MIDDLEWARE = [
 
 ]
 
-CSRF_TRUSTED_ORIGINS    = ["http://localhost:*", "http://127.0.0.1:*"]
-CORS_ORIGIN_WHITELIST   = ["http://localhost", "http://127.0.0.1"]
-CORS_ALLOWED_ORIGINS    = ["http://localhost", "http://127.0.0.1"]
+# CSRF_TRUSTED_ORIGINS    = ALLOWED_HOSTS
+# CORS_ORIGIN_WHITELIST   = ALLOWED_HOSTS
+# CORS_ALLOWED_ORIGINS    = ALLOWED_HOSTS
 CORS_ALLOW_ALL_ORIGINS  = True
 CORS_ALLOW_CREDENTIALS  = True
-SESSION_COOKIE_SECURE   = True
-SESSION_COOKIE_SAMESITE = None
 
-ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -123,23 +121,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': 
-    {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    } if DEBUG else
+ 
      {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PWD'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
     }
@@ -176,8 +169,5 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
