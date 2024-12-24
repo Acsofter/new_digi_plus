@@ -45,17 +45,27 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     results: [],
   });
 
+  const getWeekDates = (date: Date): [Date, Date] => {
+    const start = new Date(date);
+    start.setDate(
+      date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1)
+    );
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return [start, end];
+  };
+
   const onHandleNextPagination = async () => {
     if (payments.next) {
       const response = await handlePagination(payments.next);
-      if (response) setPayments(response );
+      if (response) setPayments(response);
     }
   };
 
   const onHandlePreviousPagination = async () => {
     if (payments.previous) {
       const response = await handlePagination(payments.previous);
-      if (response) setPayments(response );
+      if (response) setPayments(response);
     }
   };
 
@@ -215,6 +225,7 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
     onHandleGeneratePayment,
     onHandlePreviousPagination,
     onHandleNextPagination,
+    getWeekDates,
 
     title: "Payment",
   };
