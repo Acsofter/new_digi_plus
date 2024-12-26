@@ -74,7 +74,7 @@ export const TicketPayment = () => {
             <option value="" disabled>
               Seleccionar tipo de ticket 🆕
             </option>
-            {categories.map((category) => (
+            {categories.map((category: Category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
@@ -96,7 +96,7 @@ export const TicketPayment = () => {
               disabled={isPaid}
             />
             <div className="grid grid-cols-4 gap-2 mb-4">
-              {quickAmounts.map((amount) => (
+              {quickAmounts.map((amount: number) => (
                 <button
                   key={amount}
                   onClick={() => handleQuickAmountClick(amount)}
