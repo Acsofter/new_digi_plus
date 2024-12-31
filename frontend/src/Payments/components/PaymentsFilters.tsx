@@ -1,10 +1,24 @@
-'use client'
+"use client";
 
-import { CircleCheck, CreditCard, FileDown, UserRoundPlus, X } from 'lucide-react';
+import {
+  CircleCheck,
+  CreditCard,
+  FileDown,
+  UserRoundPlus,
+  X,
+} from "lucide-react";
 import { usePayment } from "../contexts/PaymentContext";
+import { PaymentsReport } from "./PaymentReport";
 
 export const PaymentsFilters = () => {
-  const { users, currentWeek, exportPayments, payments, handleChangesFilters, onHandleGeneratePayment } = usePayment();
+  const {
+    users,
+    currentWeek,
+    exportPayments,
+    payments,
+    handleChangesFilters,
+    onHandleGeneratePayment,
+  } = usePayment();
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
@@ -15,7 +29,10 @@ export const PaymentsFilters = () => {
               className="appearance-none bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 pl-10 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => {
                 handleChangesFilters({
-                  collaborator: e.target.value === "all" ? null : users[parseInt(e.target.value)].id,
+                  collaborator:
+                    e.target.value === "all"
+                      ? null
+                      : users[parseInt(e.target.value)].id,
                 });
               }}
             >
@@ -26,7 +43,10 @@ export const PaymentsFilters = () => {
                 </option>
               ))}
             </select>
-            <UserRoundPlus className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <UserRoundPlus
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
           </div>
 
           <span
@@ -49,14 +69,7 @@ export const PaymentsFilters = () => {
         </div>
 
         <div className="flex flex-wrap gap-4">
-          <button
-            className="inline-flex items-center px-4 py-2 border border-teal-400 text-sm font-medium rounded-md text-white bg-gradient-to-br to-teal-600 from-teal-400 hover:from-teal-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 disabled:opacity-50 disabled:cursor-not-allowed duration-300"
-            disabled={!currentWeek.is_paid}
-            onClick={exportPayments}
-          >
-            <FileDown className="mr-2" size={18} />
-            Exportar
-          </button>
+          <PaymentsReport />
           <button
             disabled={currentWeek.is_paid || !payments.results.length}
             onClick={onHandleGeneratePayment}
@@ -70,4 +83,3 @@ export const PaymentsFilters = () => {
     </div>
   );
 };
-

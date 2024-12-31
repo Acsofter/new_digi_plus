@@ -4,11 +4,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Circle,
-  CircleCheck,
-  CircleX,
   DollarSign,
   Percent,
-  ReceiptText,
   Ticket,
 } from "lucide-react";
 import {
@@ -21,6 +18,7 @@ import {
 import { useAuthentication } from "../../contexts/AuthContext";
 import { useWebsockets } from "../../contexts/WebsocketContext";
 import { useUserServices } from "../../services/user.services";
+import { RenderTickets } from "../utils/TableUtils";
 
 const initialMetricsState: MetricsInterface = {
   today: {
@@ -76,13 +74,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const { wsState } = useWebsockets();
   const { user } = useAuthentication();
   const { getWeek } = useUserServices();
-  const {
-    getMetrics,
-    getTickets,
-    getCategories,
-    updateTicketStatus,
-    handlePagination,
-  } = useUserServices();
+  const { getMetrics, getTickets, getCategories, handlePagination } =
+    useUserServices();
   const [ticketSelected, setTicketSelected] = useState<Ticket | null>(null);
   const [addTicketModal, setAddTicketModal] = useState(false);
 
@@ -139,14 +132,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const onSelectTicket = (ticket: Ticket) => {
-    setTicketSelected(ticket);
-  };
-
-  const onUnselectTicket = () => {
-    setTicketSelected(null);
-  };
-
   const clearForm = () => {
     setForm(initialForm);
   };
@@ -167,6 +152,26 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     console.log(changes);
     const updatedForm = { ...form, ...changes };
     setForm(updatedForm);
+  };
+
+  const onChangePagination = async (url: string, status: number) => {
+    if (!url) return;
+    const response = await handlePagination(url);
+    if (response) {
+      switch (status) {
+        case 1:
+          setResponseTicketsPending(response);
+          break;
+        case 2:
+          setResponseTicketsApproved(response);
+          break;
+        case 3:
+          setResponseTicketsRejected(response);
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   const getStatus = (status: number) => {
@@ -200,50 +205,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const approveTicket = async (id: number) => {
-    if (currentWeek.is_paid) return;
-    try {
-      const response = await updateTicketStatus(id, 2);
-      if (response) {
-        fetchTickets();
-      }
-    } catch (error) {
-      console.error("Error updating ticket status:", error);
-    }
-  };
-
-  const rejectTicket = async (id: number) => {
-    if (currentWeek.is_paid) return;
-    try {
-      const response = await updateTicketStatus(id, 3);
-      if (response) {
-        fetchTickets();
-      }
-    } catch (error) {
-      console.error("Error updating ticket status:", error);
-    }
-  };
-
-  const onChangePagination = async (url: string, status: number) => {
-    if (!url) return;
-    const response = await handlePagination(url);
-    if (response) {
-      switch (status) {
-        case 1:
-          setResponseTicketsPending(response);
-          break;
-        case 2:
-          setResponseTicketsApproved(response);
-          break;
-        case 3:
-          setResponseTicketsRejected(response);
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
   const format_tickets = (status: number) => {
     const types = {
       1: {
@@ -265,6 +226,16 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 
     const { title, response, color } = types[status as keyof typeof types];
 
+    const renderTicketsProps = {
+      color,
+      getStatus,
+      response,
+      currentWeek,
+      fetchTickets,
+      user,
+      onSelectTicket: setTicketSelected,
+    };
+
     return (
       <>
         <motion.tr
@@ -276,7 +247,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         >
           {response && (
             <>
-              <td className={`${color} text-left w-5 `}>
+              <td className={`${color} text-left w-5`}>
                 {title}
                 <br />
                 <span className="text-slate-300 font-normal">
@@ -326,86 +297,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
             </>
           )}
         </motion.tr>
-
-        {response?.results.map((ticket, index) => (
-          <motion.tr
-            key={ticket.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={`bg-white border-b h-16  ${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 `}
-          >
-            <td className={`border-l-4  ${color} `}>
-              {((response.current || 0) - 1) * 5 + (index + 1)}
-            </td>
-            <td className="">{getStatus(parseInt(ticket.payment.status))}</td>
-            <td className="hidden md:table-cell">{ticket.category.name}</td>
-            <td className="">{ticket.payment.amount}</td>
-            <td className="text-left ">
-              <div
-                className="w-6 rounded-full text-[0.5rem] hidden md:inline-flex items-center justify-center text-white "
-                style={{ backgroundColor: ticket.collaborator.color }}
-              >
-                {ticket.collaborator.first_name[0]}
-                {ticket.collaborator.last_name[0]}
-              </div>{" "}
-              {`${ticket.collaborator.username}`}
-            </td>
-            <td className="">
-              <span className="hidden md:inline">
-                {new Date(ticket.created_at).toLocaleString("es-EN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-
-              <span className="inline md:hidden">
-                {
-                  new Date(ticket.created_at)
-                    .toLocaleString("es-EN")
-                    .split(",")[0]
-                }
-              </span>
-            </td>
-            <td className={`border-r-2 ${color} border-spacing-0`}>
-              <div className="flex flex-wrap justify-center items-center  gap-1 w-full h-full">
-                {user?.roles.includes("staff") && (
-                  <>
-                    <button
-                      disabled={
-                        ticket.payment.status === "2" || currentWeek.is_paid
-                      }
-                      className={`  text-teal-500 cursor-pointer inline  disabled:text-gray-400 hover:opacity-85 disabled:cursor-default`}
-                      onClick={() => approveTicket(ticket.id)}
-                    >
-                      <CircleCheck className="size-3 sm:size-4" />
-                    </button>
-
-                    <button
-                      disabled={
-                        ticket.payment.status === "3" || currentWeek.is_paid
-                      }
-                      className={` inline  text-rose-500 cursor-pointer hover:opacity-85 disabled:text-gray-400 disabled:cursor-default`}
-                      onClick={() => rejectTicket(ticket.id)}
-                    >
-                      <CircleX className="size-3 sm:size-4" />
-                    </button>
-                  </>
-                )}
-                <div className="inline text-gray-400 cursor-pointer hover:opacity-85">
-                  <ReceiptText
-                    className=" size-3 sm:size-4"
-                    onClick={() => onSelectTicket(ticket)}
-                  />
-                </div>
-              </div>
-            </td>
-          </motion.tr>
-        ))}
+        <RenderTickets {...renderTicketsProps} />
       </>
     );
   };
@@ -491,13 +383,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     format_tickets,
     categories,
     form,
-    ticketSelected,
-    onSelectTicket,
-    onUnselectTicket,
     getStatus,
-    approveTicket,
-    rejectTicket,
+    ticketSelected,
     currentWeek,
+    onUnselectTicket: () => setTicketSelected(null),
 
     title: "Home",
   };

@@ -114,12 +114,12 @@ class Payment(models.Model):
                      ("2", 'Approved'), 
                      ("3", 'Rejected')
                      ),
-        default     =   "pending")
+        default     =   "1")
     type            = models.CharField(max_length=50)
     amount          = models.IntegerField()
     week            = models.ForeignKey('Week', on_delete=models.CASCADE)
     collaborator    = models.ForeignKey('User', on_delete=models.CASCADE)
-    created_at      = models.DateTimeField(auto_now_add=True) # change to created_at
+    created_at      = models.DateTimeField(auto_now_add=True)
 
 class History(models.Model):
     id              = models.AutoField(primary_key=True)
@@ -130,12 +130,12 @@ class History(models.Model):
 
 class Week(models.Model):
     id              = models.AutoField(primary_key=True)
-    collaborator    = models.ForeignKey('User', on_delete=models.CASCADE)
     week_number     = models.IntegerField()
+    year_number     = models.IntegerField(default=0)
     is_paid         = models.BooleanField(default=False)
     payment_date    = models.DateTimeField(null=True)
+    collaborator    = models.ForeignKey('User', on_delete=models.CASCADE, default=1)
     created_at      = models.DateTimeField(auto_now_add=True)
-    collaborator_percentage = models.IntegerField(default=0)
 
     def generate_payments(self):
         self.is_paid = True

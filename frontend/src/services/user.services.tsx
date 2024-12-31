@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useWebsockets } from "../contexts/WebsocketContext";
 import { AuthHeader } from "./auth.header";
+import { getISOWeek } from "date-fns";
 
 export const apiRequest = async <T, Data = unknown>(
   method: "get" | "post" | "put" | "delete",
@@ -18,7 +19,6 @@ export const apiRequest = async <T, Data = unknown>(
       ? response.data
       : false;
   } catch (error) {
-    
     console.error("API request error:", error);
     return false;
   }
@@ -27,23 +27,10 @@ export const apiRequest = async <T, Data = unknown>(
 export const useUserServices = () => {
   const { sendMessage } = useWebsockets();
 
-  const getWeekNumber = (date: Date) => {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-    const firstDayOfWeek = new Date(firstDayOfYear);
-    firstDayOfWeek.setDate(
-      firstDayOfWeek.getDate() - firstDayOfWeek.getDay() + 1
-    );
-
-    if (isNaN(firstDayOfWeek.getTime())) {
-      throw new Error("Could not calculate week number");
-    }
-
-    const weekNumber =
-      Math.floor(
-        (date.getTime() - firstDayOfWeek.getTime()) / (7 * 24 * 60 * 60 * 1000)
-      ) + 1;
-    return weekNumber;
+  const getWeekNumber = (date: Date): number => {
+    return getISOWeek(date);
   };
+
 
   const getUsers = async ({
     includeAdmins = false,

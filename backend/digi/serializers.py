@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 from .models import Category, Company, Payment, Ticket, User, Week
 from django.shortcuts import get_object_or_404
@@ -62,6 +61,7 @@ class RegistrationSuperUserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password', 'token']
 
     def create(self, validated_data):
+        validated_data['username'] = validated_data.get('username').lower() 
         return User.objects.create_superuser(**validated_data)
 
 class LoginSerializer(serializers.Serializer):
@@ -80,7 +80,7 @@ class LoginSerializer(serializers.Serializer):
         if not password:
             raise serializers.ValidationError('Especificar la contraseña')
 
-        user = get_object_or_404(User, username=username)
+        user = get_object_or_404(User, username=username.lower())
         
         if not user.check_password(password):
             print("password:", password, "user.password:", user.password)
@@ -275,7 +275,3 @@ class WeekSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-    def retrieve(self, request, pk=None):
-        print("#####################retrieving: ", request, pk)
-        week = get_object_or_404(Week, week_number=pk)
-        return week
