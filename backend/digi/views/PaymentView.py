@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import serializers
 from django.db.models import Q
+from datetime import timedelta, date
 
-
+today = date.today()
 
 class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -16,25 +17,26 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PaymentPagination
 
     def get_queryset(self):
-        filter_user = self.request.query_params.get('collaborator', None)
-        filter_week = self.request.query_params.get('week', None)
+        filter_user = self.request.query_params.get('collaborator')
+        filter_week = self.request.query_params.get('week', today.isocalendar().week)
+        filter_year = self.request.query_params.get('year', today.isocalendar().year)
+
         if self.request.user.is_staff:
-            queryset = Payment.objects.filter(Q(week__week_number=int(filter_week)))
+            queryset = Payment.objects.filter(Q(week__week_number=filter_week) & Q(week__year_number=filter_year))
             if filter_user:
-                queryset = queryset.filter(collaborator=int(filter_user))
+                queryset = queryset.filter(collaborator=filter_user)
         else:
-            queryset = Payment.objects.filter(collaborator=self.request.user)
+            queryset = Payment.objects.filter(collaborator=self.request.user, week__week_number=filter_week, week__year_number=filter_year)
         return queryset.order_by('-created_at')    
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def generate_payment(self, request):
         data = {
-            "week_number": request.data.get('week'),
+            "week_number": request.data.get('week', today.isocalendar().week),
+            "year_number": request.data.get('year', today.isocalendar().year),
             "collaborator": request.data.get('collaborator'),
         }
 
-        if not data.get("week_number"):
-            raise serializers.ValidationError('week number are required')
         week = Week.objects.get(**data)
         if not week:
             raise serializers.ValidationError('week not found')
@@ -49,19 +51,15 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def generate_payment_for_all(self, request):
-        week_number = request.data.get('week', None)
-        if not week_number:
-            raise serializers.ValidationError('week number are required')
-        week = Week.objects.filter(week_number=week_number)
+        data = {
+            "week_number": request.data.get('week', today.isocalendar().week),
+            "year_number": request.data.get('year', today.isocalendar().year),
+        }
+        
+        week = Week.objects.filter(**data)
         if not week:
             raise serializers.ValidationError('week not found')
-        
-        try:
-            for w in week:
-                w.generate_payments()
-        except Exception as e:
-            raise serializers.ValidationError(str(e))
-        
+        week.generate_payments()
         return Response({'message': 'payments generated'}, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):

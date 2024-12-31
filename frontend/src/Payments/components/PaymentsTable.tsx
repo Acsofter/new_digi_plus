@@ -31,7 +31,7 @@ export const PaymentsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {payments &&
+          {payments && payments.count ?
             payments.results.map((payment: Payment, index: number) => (
               <tr
                 key={payment.id}
@@ -68,7 +68,7 @@ export const PaymentsTable = () => {
                   </div>
                 </td> */}
               </tr>
-            ))}
+            )) : <tr><td colSpan={6} className="text-center bg-white border-b border-gray-100 py-4  text-gray-300 italic">No se han registrado pagos para esta semana</td></tr>}
         </tbody>
       </table>
       <div>

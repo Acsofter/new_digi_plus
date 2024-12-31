@@ -7,6 +7,9 @@ from rest_framework.decorators import action
 from django.db.models import Q
 from rest_framework import serializers
 from .CustomAPIView import CustomAPIView
+from datetime import date
+
+today = date.today()
 
 class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIView):
     permission_classes = {'get': [permissions.IsAuthenticated], 'put': [permissions.IsAdminUser], 'delete': [permissions.IsAdminUser]}
@@ -16,7 +19,7 @@ class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIVie
 
     def retrieve(self, request, pk=None):
         queryset = self.get_queryset()
-        week = get_object_or_404(queryset, week_number=pk)
+        week = get_object_or_404(queryset, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
         serializer = WeekSerializer(week)
         return Response(serializer.data)
 

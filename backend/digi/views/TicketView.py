@@ -37,10 +37,10 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         
 
     def create(self, request):
-        week = Week.objects.get_or_create(week_number=today.isocalendar().week, collaborator=request.user)[0]
+        week = Week.objects.get_or_create(week_number=today.isocalendar().week, year_number=today.isocalendar().year, collaborator=request.user)[0]
 
         payment_data = request.data.pop('payment', {})
-        if not payment_data.get('amount', None): return Response({"amount": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+        if not payment_data.get('amount'): return Response({"amount": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
         payment_details = {
             'type': payment_data.get('type', 'Efectivo'),
             'amount': payment_data.get('amount'),
@@ -50,9 +50,7 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         }
      
         payment = Payment.objects.create(**payment_details)
-        
-
-       
+               
         serializer = self.serializer_class(data={
             **request.data,
             'payment': payment.id,
@@ -67,24 +65,33 @@ class TicketViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     
 
     def modify_payment(self, id, status):
+    
         if not status: return
         payment = get_object_or_404(Payment, id=id)
+
+        # if status is 1(pending) staff can approve or reject
+        # if status is 2(approved) or 3(rejected) staff cant change the status
+        if int(payment.status) == 1 and int(status) != int(payment.status):
+            payment.status = status
+            payment.save()
+
         # payment.amount = payment_details.get('amount', payment.amount)
         # payment.type = payment_details.get('type', payment.type)
-        payment.status = status
-        payment.save()
+        return payment
    
     def update(self, request, pk=None):
+        if not self.request.user.is_staff: return Response({"status": ["You dont have permission to modify this ticket"]}, status=status.HTTP_403_FORBIDDEN)
+        
         ticket = get_object_or_404(Ticket, pk=pk)
 
         payment_data = request.data.get('payment', {})
-        status_found = payment_data.get('status')
-        
+        status_req = payment_data.get('status')  
         del request.data['payment']
-        if not status_found:
+        
+        if not status_req:
             return Response({"status": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
 
-        self.modify_payment(ticket.payment.id, status_found)
+        self.modify_payment(ticket.payment.id, status_req)
 
         serializer = self.serializer_class(ticket, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
