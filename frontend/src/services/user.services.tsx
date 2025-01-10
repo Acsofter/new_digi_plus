@@ -81,12 +81,12 @@ export const useUserServices = () => {
     data,
   }: {
     id: number;
-    data: Category;
+    data: Partial<Category>;
   }): Promise<Category | false> => {
     const response = await apiRequest<Category>(
       "put",
       `/categories/${id}/`,
-      data
+      {data}
     );
     if (response) {
       sendMessage({
@@ -101,8 +101,10 @@ export const useUserServices = () => {
     return await apiRequest<Company>("get", `/company/`);
   };
 
-  const createCategory = async (data: Category) => {
-    const response = await apiRequest<Category>("post", `/categories/`, data);
+  const createCategory = async (data: Partial<Category>) => {
+    const response = await apiRequest<Category>("post", `/categories/`, {
+      data,
+    });
     if (response) {
       sendMessage({
         type: "category_added",
