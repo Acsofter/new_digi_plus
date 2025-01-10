@@ -4,6 +4,7 @@ interface State {
   popup: Popup;
   auth: AuthState;
 }
+
 interface WsState {
   readyState: number;
   lastMessage: any;
@@ -108,6 +109,7 @@ interface Category {
   created_at: string;
   updated_at: string;
 }
+
 interface Payment {
   id: number;
   status: string;
@@ -135,7 +137,16 @@ type RequestPayment = {
   status?: string;
 };
 
+interface Tab {
+  id: string;
+  label: string;
+  content: React.ReactNode;
+}
 
+interface TabsProps {
+  tabs: Tab[];
+  defaultTab?: string;
+}
 
 interface CreateTicket {
   payment: {
