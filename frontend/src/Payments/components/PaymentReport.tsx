@@ -1,11 +1,11 @@
 'use client'
 
 import { format } from "date-fns";
-import React, { useRef, useMemo } from "react";
+import { CheckCircle, Clock, FileDown, XCircle } from 'lucide-react';
+import React, { useMemo, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import { usePayment } from "../contexts/PaymentContext";
 import { useAuthentication } from "../../contexts/AuthContext";
-import { FileDown, DollarSign, Clock, XCircle, CheckCircle } from 'lucide-react';
+import { usePayment } from "../contexts/PaymentContext";
 
 export const PaymentsReport: React.FC = () => {
   const { payments, currentWeek, getWeekDates, users } = usePayment();
@@ -17,9 +17,9 @@ export const PaymentsReport: React.FC = () => {
   });
 
   const { totalPending, totalRejected, subtotal, remaining, total } = useMemo(() => {
-    const totalPending = payments?.results.filter(p => p.status === "1").reduce((sum, p) => sum + p.amount, 0) || 0;
-    const totalRejected = payments?.results.filter(p => p.status === "2").reduce((sum, p) => sum + p.amount, 0) || 0;
-    const totalApproved = payments?.results.filter(p => p.status === "3").reduce((sum, p) => sum + p.amount, 0) || 0;
+    const totalPending = (payments ?.results as Payment[]).filter(p => p.status === "1").reduce((sum, p) => sum + p.amount, 0) || 0;
+    const totalRejected = (payments ?.results as Payment[]).filter(p => p.status === "2").reduce((sum, p) => sum + p.amount, 0) || 0;
+    const totalApproved = (payments ?.results as Payment[]).filter(p => p.status === "3").reduce((sum, p) => sum + p.amount, 0) || 0;
     const subtotal = totalApproved;
     const companyPercentage = company ? 100 - company.collaborator_percentage : 0;
     const remaining = company ? subtotal * (companyPercentage * 0.01) : 0;
@@ -61,7 +61,7 @@ export const PaymentsReport: React.FC = () => {
 
         <div className="bg-white  rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900">Colaboradores</h2>
-          <p className="text-gray-700">{users.map(user => user.username).join(", ")}</p>
+          <p className="text-gray-700">{(users as User[]).map(user => user.username).join(", ")}</p>
         </div>
 
         <div className="bg-white  rounded-lg overflow-hidden">
@@ -80,7 +80,7 @@ export const PaymentsReport: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {payments.results.map((payment) => (
+                {payments.results.map((payment: Payment) => (
                   <tr key={payment.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.ticket.collaborator.username}</td>

@@ -18,13 +18,11 @@ class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIVie
 
 
     def retrieve(self, request, pk=None):
-        collaborator = request.data.get('collaborator')
-        if collaborator:
-            week = get_object_or_404(queryset, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
-        else:
-            week = get_object_or_404(queryset, week_number=pk, year_number=today.isocalendar().year)
-        
-
+        collaborator = request.query_params.get('collaborator')
+        try:
+            week = get_object_or_404(Week, week_number=pk, collaborator=collaborator)
+        except Exception as e:
+            raise serializers.ValidationError(str(e))
 
         queryset = self.get_queryset()
         serializer = WeekSerializer(week)

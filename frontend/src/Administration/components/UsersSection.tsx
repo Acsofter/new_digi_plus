@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UserHook } from '../hooks/UserHook';
 
 export const UsersSection = () => {
@@ -79,7 +79,7 @@ export const UsersSection = () => {
                     Editar
                   </button>
                   <button
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => handleDeleteUser(user.id as number)}
                     className="text-red-600 hover:text-red-900"
                   >
                     Eliminar

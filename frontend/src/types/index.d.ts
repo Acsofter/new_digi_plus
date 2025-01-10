@@ -62,6 +62,7 @@ interface Ticket {
   collaborator: User;
   description: string;
   created_at: string;
+  week_paid: string;
   updated_at: string;
   company: number;
 }
@@ -114,7 +115,7 @@ interface Payment {
   id: number;
   status: string;
   type: string;
-  amount: string;
+  amount: number;
   week: number | null;
   ticket: Ticket;
   created_at: string;

@@ -1,5 +1,5 @@
-import {  motion } from "framer-motion";
-import { Circle, CircleCheck, CircleX, ListCollapse, ReceiptText } from "lucide-react";
+import { motion } from "framer-motion";
+import { CircleCheck, CircleX, ListCollapse } from "lucide-react";
 import { useUserServices } from "../../services/user.services";
 
 
@@ -42,7 +42,8 @@ export const RenderTickets = ({response, currentWeek, fetchTickets, user, onSele
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`bg-white  text-gray-500 h-16  ${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 `}
+            
+            className={`  text-gray-500 h-16  border-${color} border-opacity-15 dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600 ${ticket.week_paid.is_paid ? "bg-slate-100 dark:bg-gray-600" : "bg-white hover:bg-gray-50"} `}
           >
             <td className={`border-l-4  ${color} `}>
               {((response.current || 0) - 1) * 5 + (index + 1)}
@@ -81,7 +82,7 @@ export const RenderTickets = ({response, currentWeek, fetchTickets, user, onSele
             </td>
             <td className={`border-r-2 ${color} border-spacing-0`}>
               <div className="flex flex-wrap justify-center items-center  gap-1 w-full h-full">
-                {user?.roles.includes("staff") &&
+                {ticket.week_paid.is_paid || user?.roles.includes("staff") &&
                   ticket.payment.status === "1" && (
                     <>
                       <button

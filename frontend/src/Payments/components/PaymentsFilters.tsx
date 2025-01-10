@@ -3,9 +3,8 @@
 import {
   CircleCheck,
   CreditCard,
-  FileDown,
   UserRoundPlus,
-  X,
+  X
 } from "lucide-react";
 import { usePayment } from "../contexts/PaymentContext";
 import { PaymentsReport } from "./PaymentReport";
@@ -14,7 +13,6 @@ export const PaymentsFilters = () => {
   const {
     users,
     currentWeek,
-    exportPayments,
     payments,
     handleChangesFilters,
     onHandleGeneratePayment,
@@ -27,16 +25,21 @@ export const PaymentsFilters = () => {
           <div className="relative">
             <select
               className="appearance-none bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 pl-10 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={
+                currentWeek.collaborator ? currentWeek.collaborator.id : ""
+              }
               onChange={(e) => {
                 handleChangesFilters({
                   collaborator:
-                    e.target.value === "all"
+                    e.target.value === ""
                       ? null
                       : users[parseInt(e.target.value)].id,
                 });
               }}
             >
-              <option value="all">Todos</option>
+              <option value="" className="" disabled>
+                Seleccione un colaborador
+              </option>
               {users.map((user: User, index: number) => (
                 <option key={index} value={index} className="capitalize">
                   {user.username}
@@ -69,15 +72,19 @@ export const PaymentsFilters = () => {
         </div>
 
         <div className="flex flex-wrap gap-4">
-          <PaymentsReport />
-          <button
-            disabled={currentWeek.is_paid || !payments.results.length}
-            onClick={onHandleGeneratePayment}
-            className="inline-flex items-center px-4 py-2 border border-indigo-400 text-sm font-medium rounded-md text-white bg-gradient-to-br to-indigo-600 from-indigo-400 hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed  duration-300"
-          >
-            <CreditCard className="mr-2" size={18} />
-            Generar pago
-          </button>
+          {(currentWeek && currentWeek.is_paid) ? (
+            <PaymentsReport />
+          ) : payments.count  ? (
+
+            <button
+              onClick={onHandleGeneratePayment}
+              className="inline-flex items-center px-4 py-2 border border-indigo-400 text-sm font-medium rounded-md text-white bg-gradient-to-br to-indigo-600 from-indigo-400 hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed  duration-300"
+            >
+              <CreditCard className="mr-2" size={18} />
+              Generar pago
+            </button>
+          ) :
+          null}
         </div>
       </div>
     </div>

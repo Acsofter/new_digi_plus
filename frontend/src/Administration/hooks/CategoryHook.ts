@@ -81,7 +81,9 @@ export const CategoryHook = () => {
   };
 
   const deleteCategory = async (id: number) => {
-    return;    
+    
+    return id;    
+
   };
 
   return {

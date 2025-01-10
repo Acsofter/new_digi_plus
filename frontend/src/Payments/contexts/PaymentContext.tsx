@@ -131,6 +131,7 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchPayments = async () => {
+    if (!filters.collaborator) return;
     const response = await getPayments({ filters });
     if (response) setPayments(response);
   };
@@ -157,7 +158,8 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const getCurrentWeek = async () => {
-    const response = await getWeek({ week: filters.week });
+    if (!filters.collaborator) return;
+    const response = await getWeek({ week: filters.week, collaborator: filters.collaborator });
     if (response) {
       setCurrentWeek(response);
     } else {
