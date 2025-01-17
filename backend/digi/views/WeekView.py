@@ -21,9 +21,11 @@ class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIVie
 
         collaborator = request.data.get('collaborator')
         if collaborator:
-            week = get_object_or_404(queryset, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
+            week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
         else:
-            week = get_object_or_404(queryset, week_number=pk, year_number=today.isocalendar().year)
+            week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year)
+
+        return Response(self.serializer_class(week).data, status=status.HTTP_200_OK)
      
     
 
