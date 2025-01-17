@@ -93,8 +93,8 @@ class CompanyConsumer(AsyncWebsocketConsumer):
 
         await self.send(text_data=json.dumps({
             "type": "user_joined",
-            "user":self.user,
-            "message": f"{self.user['username']} se ha unido al chat",
+            "user":event.get('user'),
+            "message": f"{event.get('user')['username']} se ha unido al chat",
         }))
 
     async def user_disabled(self, event):

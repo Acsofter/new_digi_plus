@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden w-full  flex flex-col md:flex-row h-full ">
         {/* Left side */}
         <motion.div
-          className="hidden md:flex h-full md:w-4/5 bg-indigo-600 text-white items-center  p-10 relative overflow-hidden"
+          className="hidden md:flex h-full md:w-4/5 bg-gradient-to-b to-indigo-600 from-indigo-400 border-2 border-indigo-400 text-white items-center  p-10 relative overflow-hidden"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -89,14 +89,14 @@ export const Login: React.FC = () => {
             <div className="text-sm text-right">
               <a
                 href="#"
-                className="text-indigo-600 hover:underline dark:text-indigo-400"
+                className="text-gray-400 hover:underline dark:text-indigo-400"
               >
-                ¿Olvidaste tu contraseña?
+                Si olvido su contraseña contacte al administrador
               </a>
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white rounded-md px-4 py-2 font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-gradient-to-tr to-indigo-600 from-indigo-400 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-md px-4 py-2 font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

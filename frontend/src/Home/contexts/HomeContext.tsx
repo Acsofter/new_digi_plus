@@ -73,8 +73,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const { wsState } = useWebsockets();
   const { user } = useAuthentication();
-  const { getWeek } = useUserServices();
-  const { getMetrics, getTickets, getCategories, handlePagination } =
+  const { getMetrics, getTickets, getCategories, handlePagination, getWeek } =
     useUserServices();
   const [ticketSelected, setTicketSelected] = useState<Ticket | null>(null);
   const [addTicketModal, setAddTicketModal] = useState(false);
@@ -102,7 +101,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const getCurrentWeek = async () => {
-    const response = await getWeek({ week: getWeekNumber() });
+    const filters = { week: getWeekNumber(), collaborator: user?.id }
+    const response = await getWeek(filters);
     if (response) {
       setCurrentWeek(response);
     }
@@ -149,7 +149,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   }: {
     changes: { [key: string]: string | number };
   }) => {
-    console.log(changes);
     const updatedForm = { ...form, ...changes };
     setForm(updatedForm);
   };
@@ -243,6 +242,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
+          
           className="text-xs text-slate-400 dark:bg-slate-700 font-semibold h-16"
         >
           {response && (
@@ -344,6 +344,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
       const lastMessage = JSON.parse(wsState.lastMessage.data);
 
       switch (lastMessage.type) {
+        case "payment_for_user":
+            fetchTickets();
+            getCurrentWeek();
+            break
         case "ticket_added":
         case "ticket_updated":
         case "ticket_deleted":

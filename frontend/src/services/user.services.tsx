@@ -1,7 +1,7 @@
 import axios from "axios";
+import { getISOWeek } from "date-fns";
 import { useWebsockets } from "../contexts/WebsocketContext";
 import { AuthHeader } from "./auth.header";
-import { getISOWeek } from "date-fns";
 
 export const apiRequest = async <T, Data = unknown>(
   method: "get" | "post" | "put" | "delete",
@@ -30,7 +30,6 @@ export const useUserServices = () => {
   const getWeekNumber = (date: Date): number => {
     return getISOWeek(date);
   };
-
 
   const getUsers = async ({
     includeAdmins = false,
@@ -83,11 +82,9 @@ export const useUserServices = () => {
     id: number;
     data: Partial<Category>;
   }): Promise<Category | false> => {
-    const response = await apiRequest<Category>(
-      "put",
-      `/categories/${id}/`,
-      {data}
-    );
+    const response = await apiRequest<Category>("put", `/categories/${id}/`, {
+      data,
+    });
     if (response) {
       sendMessage({
         type: "category_updated",
@@ -200,6 +197,7 @@ export const useUserServices = () => {
       week: number;
     };
   }) => {
+    
     return await apiRequest<any>("get", `/payments/`, { params: filters });
   };
 
@@ -262,8 +260,9 @@ export const useUserServices = () => {
     }
   };
 
-  const getWeek = async ({ week }: { week: number }) => {
-    return await apiRequest<any>("get", `/week/${week}/`);
+  const getWeek = async ({ week, collaborator }: { week: number, collaborator: number | null }) => {
+
+    return await apiRequest<any>("get", `/week/${week}/`, collaborator ? { params: { collaborator } } : {});
   };
 
   const updateUser = async ({ userDetails }: { userDetails: User }) => {

@@ -1,13 +1,13 @@
 from django.shortcuts import get_object_or_404
 from ..pagination import PaymentPagination
 from ..models import Payment, Week
-from ..serializers import PaymentSerializerWithTicketDetails
+from ..serializers import PaymentSerializerWithTicketDetails, WeekSerializer
 from rest_framework import permissions, mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import serializers
 from django.db.models import Q
-from datetime import timedelta, date
+from datetime import date
 
 today = date.today()
 
@@ -31,22 +31,29 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def generate_payment(self, request):
-        data = {
-            "week_number": request.data.get('week', today.isocalendar().week),
-            "year_number": request.data.get('year', today.isocalendar().year),
-            "collaborator": request.data.get('collaborator'),
-        }
-
-        week = Week.objects.get(**data)
-        if not week:
-            raise serializers.ValidationError('week not found')
         try:
+            data = {
+                "week_number": request.data.get('week', today.isocalendar().week),
+                "year_number": request.data.get('year', today.isocalendar().year),
+                "collaborator": request.data.get('collaborator'),
+            }
 
-            week.generate_payments()
+            week = Week.objects.get(**data)
+
+            if not week:
+                raise serializers.ValidationError('week not found')
+            try:
+
+
+                week.generate_payments()
+            except Exception as e:
+                print(e)
+                raise serializers.ValidationError(str(e))
+            
+            return Response({'message': WeekSerializer(week).data}, status=status.HTTP_200_OK)
         except Exception as e:
-            raise serializers.ValidationError(str(e))
-        
-        return Response({'message': 'payments generated for collaborator {}'.format(week.collaborator.username)}, status=status.HTTP_200_OK)
+            print(e)
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser])

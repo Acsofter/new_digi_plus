@@ -55,8 +55,9 @@ export const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
     if (user?.username === username) {
       toast.info("Te has unido ");
     } else {
-      if (user.roles.includes("user")) return;
-      toast.info(`${username} se ha unido `);
+      if (user.roles.includes("staff")) {
+        toast.info(`${username} se ha unido `);
+      }
     }
     notificationSound();
   };
@@ -81,6 +82,14 @@ export const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
     notificationSound();
   };
 
+  const onHandlerTicketUpdate = (username: string) => {
+    if (user.username === username) {
+      toast.success("Un ticket ha sido actualizado");
+    }
+    if (user.roles.includes("user")) return;
+    toast.success("Ticket actualizado");
+  };
+
   useEffect(() => {
     setWsState({ readyState, lastMessage });
     const message = lastMessage ? JSON.parse(lastMessage.data) : null;
@@ -95,11 +104,17 @@ export const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
         case "ticket_added":
           onHandlerTicketAdded(message.payload.ticket.collaborator.username);
           break;
+        case "ticket_updated":
+          onHandlerTicketUpdate(message.payload.collaborator.username);
+          console.log(
+            "message.payload.collaborador: ",
+            message.payload.collaborator.username
+          );
+          break;
         case "company_updated":
         case "category_updated":
         case "user_updated":
         case "payment_for_all":
-        case "ticket_updated":
         case "ticket_deleted":
           toast.info(message.message);
           break;

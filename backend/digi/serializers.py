@@ -160,6 +160,15 @@ class TicketSerializer(serializers.ModelSerializer):
     payment = serializers.PrimaryKeyRelatedField(queryset=Payment.objects.all())
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     collaborator = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    week_paid = serializers.SerializerMethodField(read_only=True)
+
+    def get_week_paid(self, obj):
+        try:
+            week_found = Week.objects.get(collaborator=obj.collaborator, week_number=obj.payment.week.week_number, year_number=obj.payment.week.year_number)
+        except models.ObjectDoesNotExist:
+            return {}
+
+        return WeekSerializer(week_found).data
     
     class Meta:
         model = Ticket

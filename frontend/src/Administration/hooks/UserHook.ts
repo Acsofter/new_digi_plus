@@ -1,12 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserServices } from "../../services/user.services";
 
-interface User {
-  id: number;
-  // Add other user properties as needed
-  name: string;
-  email: string;
-}
+
 
 export const UserHook = () => {
   const { getUsers, updateUser: updateUserService } = useUserServices();
