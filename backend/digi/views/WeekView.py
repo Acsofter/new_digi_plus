@@ -29,4 +29,3 @@ class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIVie
      
     
 
-
