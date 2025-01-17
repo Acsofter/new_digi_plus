@@ -20,12 +20,17 @@ class WeekViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, CustomAPIVie
     def retrieve(self, request, pk=None):
 
         collaborator = request.data.get('collaborator')
-        if collaborator:
-            week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
-        else:
-            week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year)
+        try: 
+            if collaborator:
+                week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year, collaborator=request.user)
+            else:
+                week = get_object_or_404(Week, week_number=pk, year_number=today.isocalendar().year)
 
-        return Response(self.serializer_class(week).data, status=status.HTTP_200_OK)
-     
+            return Response(self.serializer_class(week).data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
     
+
+
 
