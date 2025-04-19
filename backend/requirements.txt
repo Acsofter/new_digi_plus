@@ -16,10 +16,6 @@ colorama==0.4.6
 constantly==23.10.4
 cryptography==42.0.8
 cssselect2==0.7.0
-daphne==4.1.2
-Django==5.0.6
-django-cors-headers==4.3.1
-djangorestframework==3.15.1
 fonttools==4.53.1
 html5lib==1.1
 hyperlink==21.0.0
@@ -64,3 +60,7 @@ xhtml2pdf==0.2.16
 zope.interface==6.4.post2
 zopfli==0.2.3
 gunicorn
+daphne
+Django
+django-cors-headers
+djangorestframework
