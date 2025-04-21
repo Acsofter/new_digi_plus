@@ -64,3 +64,4 @@ daphne
 Django
 django-cors-headers
 djangorestframework
+channels_redis
